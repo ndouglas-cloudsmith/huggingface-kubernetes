@@ -145,10 +145,20 @@ To remove a specific field (```"context"``` in this case) while keeping all othe
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false}' | jq 'del(.context)'
 ```
 
-Improved ```temperature``` options to get better results from the LLM:
+Improved ```options``` to get better results from the LLM:
 ```
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
 ```
+
+| Parameters  | Original Value | New Value  | Reason for Change |
+| ------------- | ------------- | ------------- | ------------- |
+| ```temperature``` | ```0.6``` | ```0.5```  | Lowering the temperature makes the model more deterministic and factual. For questions like "Who is...", you want the model to be highly confident in its answer. (A typical range is ```0.0``` to ```1.0```).  |
+| ```repeat-penalty``` | ```1.15``` | ```1.1```  | A slightly lower repeat penalty is often recommended for Qwen models. It still prevents looping but is less aggressive, maintaining flow in a detailed factual answer. (Range is usually ```1.0``` to ```2.0```). |
+| ```top_k```  | (not set) | ```40``` | This limits the model's token sampling to the top 40 most likely tokens at each step. This significantly reduces the chance of generating incoherent or irrelevant words.  |
+| ```top_p```  | (not set) | ```0.9``` | This is Nucleus Sampling. It filters tokens by cumulative probability. Setting it to ```0.9``` means the model only considers the most probable tokens that add up to 90% of the probability mass. This works well with a lower temperature for high-quality, focused output.  |
+| ```num_predict```  | ```1024```  | ```1024``` | Retained. This ensures you get a long, detailed response, which directly contributes to better quality for complex queries.  |
+
+
 
 ## Troubleshooting
 ```Describe``` pods
