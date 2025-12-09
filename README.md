@@ -100,7 +100,7 @@ Run the following command in a separate terminal window (while your ```kubectl p
 ```
 curl http://localhost:8080/api/generate -d '{
   "model": "qwen2:0.5b",
-  "prompt": "Write a short, three-word poem on why Cloudsmith is the coolest company.",
+  "prompt": "Write a short, three-word poem on who Cloudsmith are.",
   "stream": false
 }'
 ```
