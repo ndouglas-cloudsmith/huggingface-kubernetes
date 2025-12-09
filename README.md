@@ -140,6 +140,11 @@ curl http://localhost:8080/api/generate -d '{
 }'
 ```
 
+To remove a specific field (```"context"``` in this case) while keeping all other fields and pretty-printing the result, you use the ```del()``` function in ```jq```.
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false}' | jq 'del(.context)'
+```
+
 
 ## Troubleshooting
 ```Describe``` pods
