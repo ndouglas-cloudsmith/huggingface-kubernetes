@@ -186,11 +186,14 @@ kubectl describe pod $(kubectl get pods --selector=app=llm-ollama -o jsonpath='{
 ```
 kubectl logs --selector=app=llm-ollama -f
 ```
+```events``` from pods
+```
+kubectl get events --field-selector involvedObject.name=llm-ollama-deployment-85677d8dc8-w5lqr -w
+```
 Pods ```Status```
 ```
 kubectl get pods --show-labels  
 ```
-
 ```Colorise``` kubectl
 ```
 alias kubectl="kubecolor"
