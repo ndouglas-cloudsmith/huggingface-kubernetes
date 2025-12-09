@@ -138,6 +138,10 @@ Pods ```Status```
 kubectl get pods --show-labels  
 ```
 
+```Colorise``` kubectl
+```
+alias kubectl="kubecolor"
+```
 
 ## Cleanup
 ```
