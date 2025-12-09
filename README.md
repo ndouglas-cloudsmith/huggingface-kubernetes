@@ -145,6 +145,10 @@ To remove a specific field (```"context"``` in this case) while keeping all othe
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false}' | jq 'del(.context)'
 ```
 
+Improved ```temperature``` options to get better results from the LLM:
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
+```
 
 ## Troubleshooting
 ```Describe``` pods
