@@ -12,40 +12,30 @@ cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llm-tgi-deployment
+  name: llm-ollama-deployment
   labels:
-    app: llm-tgi
+    app: llm-ollama
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: llm-tgi
+      app: llm-ollama
   template:
     metadata:
       labels:
-        app: llm-tgi
+        app: llm-ollama
     spec:
-      volumes:
-        # TGI requires shared memory
-        - name: dshm
-          emptyDir:
-            medium: Memory
       containers:
-        - name: tgi-server
-          image: ghcr.io/huggingface/text-generation-inference:latest 
+        - name: ollama-server
+          image: ollama/ollama:latest # ARM64 compatible image
           ports:
-            - containerPort: 80 # TGI default port
+            - containerPort: 11434 # Ollama default API port
           env:
-            # --- SMALLER MODEL CONFIGURATION ---
-            # Phi-3 Mini (3.8B parameters)
-            - name: MODEL_ID
-              value: "microsoft/Phi-3-mini-4k-instruct" 
-            # Use quantization to reduce memory usage (AWQ is a common 4-bit method)
-            - name: QUANTIZE
-              value: "awq" 
-            - name: SHARDED
-              value: "false" 
-            
+            # Set memory request higher if using a larger model like llama3:8b
+            # Ollama downloads models to /root/.ollama, consider using a persistent volume
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+              
           resources:
             requests:
               # MINIMAL RESOURCE REQUESTS (Aiming for < 8Gi total)
@@ -54,9 +44,8 @@ spec:
             limits:
               memory: "8Gi" 
               cpu: "4" 
-          volumeMounts:
-            - mountPath: /dev/shm
-              name: dshm
+          # The Ollama entrypoint will start the server. 
+          # The first API call will trigger the model download.
 EOF
 ```
 
@@ -68,16 +57,15 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
-  name: llm-tgi-service
+  name: llm-ollama-service
 spec:
-  # CHANGED: Use ClusterIP for internal-only service access
   type: ClusterIP 
   selector:
-    app: llm-tgi
+    app: llm-ollama # Match the new deployment label
   ports:
     - protocol: TCP
-      port: 80 # The service port
-      targetPort: 80 # The container port (TGI)
+      port: 8080 # Service port (you can choose this freely)
+      targetPort: 11434 # Container port (Ollama API)
 EOF
 ```
 
