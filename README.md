@@ -206,3 +206,14 @@ kubectl delete deployment llm-ollama-deployment
 kubectl delete configmap ollama-startup-script
 kubectl delete service llm-ollama-service
 ```
+
+## Wizard AI Cow
+If you have [cowsay](https://pypi.org/project/cowsay/) already installed locally, you can pipe the AI response into the cows dialogue box.
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq -r '.response' | cowsay 
+```
+
+Low-quality quality AI cow results:
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq -r '.response' | cowsay -W 150 -f tux
+```
