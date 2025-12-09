@@ -141,6 +141,6 @@ kubectl get pods --show-labels
 
 ## Cleanup
 ```
-kubectl delete deployment llm-tgi-deployment
-kubectl delete service llm-tgi-service
+kubectl delete deployment llm-ollama-deployment
+kubectl delete service llm-ollama-service
 ```
