@@ -82,28 +82,29 @@ kubectl port-forward svc/llm-ollama-service 8080:8080
 
 ### Interact with the AI
 
-Now, you can interact with the LLM using ```http://localhost:8080``` as the base URL, just as if it were running directly on your machine.
+Define the Pod Variable (if not already done):
 
 ```
-export SERVICE_URL="http://localhost:8080"
-
-curl $SERVICE_URL/v1/chat/completions \
-  -X POST \
-  -d '{
-    "model": "tgi",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Give me a one-sentence summary of the port-forward command."
-      }
-    ],
-    "max_tokens": 50,
-    "stream": false
-  }' \
-  -H 'Content-Type: application/json'
+export OLLAMA_POD=$(kubectl get pods --selector=app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
 ```
 
-This method is ideal for local testing as it requires no cloud resources and avoids the complexity of setting up an Ingress Controller or external Load Balancer in your local environment.
+Run the ollama pull command for ```Qwen2:0.5B``` (```300 MB``` - ```0.5 Parameters```:
+
+```
+kubectl exec -it $OLLAMA_POD -- ollama pull qwen2:0.5b
+```
+
+Once the ```ollama pull``` command reports the model is successfully downloaded, it is ready to serve requests immediately. <br/>
+Run the following command in a separate terminal window (while your ```kubectl port-forward``` remains active) to generate a response:
+
+```
+curl http://localhost:8080/api/generate -d '{
+  "model": "qwen2:0.5b",
+  "prompt": "Write a short, three-word poem on why Cloudsmith is the coolest company.",
+  "stream": false
+}'
+```
+
 
 ## Troubleshooting
 ```Describe``` pods
