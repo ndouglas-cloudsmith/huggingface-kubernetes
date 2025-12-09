@@ -73,7 +73,7 @@ EOF
 
 The ```port-forward``` command will listen on a port on your local machine (like, ```8080```) and forward all traffic to the specified service and port inside the cluster (```llm-tgi-service:80```).
 ```
-kubectl port-forward svc/llm-tgi-service 8080:80
+kubectl port-forward svc/llm-ollama-service 8080:8080
 ```
 
 - Local Port (```8080```): This is the port you will use on your machine (eg: ```http://localhost:8080```).
@@ -104,6 +104,20 @@ curl $SERVICE_URL/v1/chat/completions \
 ```
 
 This method is ideal for local testing as it requires no cloud resources and avoids the complexity of setting up an Ingress Controller or external Load Balancer in your local environment.
+
+## Troubleshooting
+```Describe``` pods
+```
+kubectl describe pod $(kubectl get pods --selector=app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+```
+```Logs``` from pods
+```
+kubectl logs --selector=app=llm-ollama -f
+```
+Pods ```Status```
+```
+kubectl get pods --show-labels  
+```
 
 
 ## Cleanup
