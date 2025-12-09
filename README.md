@@ -1,4 +1,4 @@
-# Hugging Face Kubernetes
+# Ollama Kubernetes
 Demo of HuggingFace AI app running on Kubernetes
 
 ## LLM Deployment Template
