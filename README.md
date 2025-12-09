@@ -159,6 +159,23 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 | ```num_predict```  | ```1024```  | ```1024``` | Retained. This ensures you get a long, detailed response, which directly contributes to better quality for complex queries.  |
 
 
+### Improved Command for Factual Quality
+I recommend lowering the temperature slightly and introducing ```top_k``` and ```top_p``` for stricter sampling control, as this will prioritise the model's most confident and coherent tokens.
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq 'del(.context)'
+```
+
+### Set the parameters to maximise randomness, repetition, and incoherence.
+To produce the worst quality, most nonsensical, and most repetitive output, we need to make the following extreme adjustments:
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq 'del(.context)'
+```
+
+1. **Maximise** ```temperature```: Set it to a high value (like ```2.0```). This flattens the probability distribution, making the model pick tokens almost randomly, even if they make no sense in context.
+2. **Minimise** ```repeat_penalty```: Set it to ```1.0``` (or ```0.0``` if your system supports it, as that eliminates the penalty completely). This allows the model to get stuck in loops, repeating the same words or phrases endlessly.
+3. Set ```top_k``` and ```top_p``` to their widest possible range (or max value): This ensures the model considers virtually every word in its vocabulary at each step, regardless of how improbable it is.
+
+<br/><br/>
 
 ## Troubleshooting
 ```Describe``` pods
