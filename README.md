@@ -112,8 +112,73 @@ kubectl port-forward svc/llm-ollama-service 8080:8080
 ```
 
 - Local Port (```8080```): This is the port you will use on your machine (eg: ```http://localhost:8080```).
-- Service Name (```llm-tgi-service```): The name of the Kubernetes service.
+- Service Name (```llm-ollama-service```): The name of the Kubernetes service.
 - Service Port (```80```): The port the service is configured to listen on.
+
+## Open WebUI Deployment (Conceptual)
+
+You will need a new set of YAML manifests for Open WebUI. The key configuration is setting the ```OLLAMA_BASE_URL``` environment variable to point to your existing Ollama service.
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui-deployment
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+        - name: webui-server
+          image: ghcr.io/open-webui/open-webui:main
+          ports:
+            - containerPort: 8080 # Open WebUI listens on 8080
+          env:
+            # Crucially, this connects to your existing Ollama Service
+            - name: OLLAMA_BASE_URL
+              # Service name:port (llm-ollama-service is listening on 8080, targetting 11434)
+              value: "http://llm-ollama-service:8080"
+          volumeMounts:
+            # Volume for persistent data (like user accounts, chats, etc.)
+            - name: webui-data
+              mountPath: /app/backend/data
+      volumes:
+        # Define a Persistent Volume Claim (PVC) here for production
+        - name: webui-data
+          emptyDir: {} # Use emptyDir for quick testing, replace with PVC for persistence
+EOF
+```
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui-service
+spec:
+  type: ClusterIP
+  selector:
+    app: open-webui
+  ports:
+    - protocol: TCP
+      port: 8080 # Service port for the UI
+      targetPort: 8080 # Container port for Open WebUI
+EOF
+```
+
+```
+kubectl port-forward svc/open-webui-service 3000:8080
+```
+
 
 ### Interact with the AI
 
