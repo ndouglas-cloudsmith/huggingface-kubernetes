@@ -203,5 +203,6 @@ alias kubectl="kubecolor"
 ## Cleanup
 ```
 kubectl delete deployment llm-ollama-deployment
+kubectl delete configmap ollama-startup-script
 kubectl delete service llm-ollama-service
 ```
