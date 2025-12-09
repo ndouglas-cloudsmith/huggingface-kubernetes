@@ -9,6 +9,28 @@ This deployment pulls the TGI image and configures it to load a specific model.
 
 ```
 cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ollama-startup-script
+data:
+  # The startup script for the Ollama server and model pull.
+  startup.sh: |
+    #!/bin/bash
+    
+    # 1. Start the Ollama server process in the background.
+    /usr/bin/ollama serve &
+    
+    # 2. Wait for the server to initialize.
+    sleep 5
+    
+    # 3. Pull the required model using the Ollama client utility.
+    echo "Starting model pull for qwen2:0.5b..."
+    /usr/bin/ollama pull qwen2:0.5b
+    
+    # 4. Keep the container alive by waiting for the background server process.
+    wait
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,43 +47,38 @@ spec:
       labels:
         app: llm-ollama
     spec:
-      # --- 1. INIT CONTAINER BLOCK ---
-      initContainers:
-      - name: pull-model
-        image: ollama/ollama:latest
-        command: ["ollama", "pull", "qwen2:0.5b"] # The command runs and exits
-        resources:
-          # Needs enough memory to run the pull command and store the model temporarily
-          requests:
-            memory: "1Gi"
-          limits:
-            memory: "2Gi"
-            
-      # --- 2. MAIN APPLICATION CONTAINER ---
       containers:
         - name: ollama-server
           image: ollama/ollama:latest
+          # Execute the mounted startup script
+          command: ["/bin/bash", "/app/startup.sh"] 
           ports:
             - containerPort: 11434
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
-
           resources:
             requests:
-              # Adjusted memory request since model is already downloaded to the shared volume
               memory: "6Gi"
               cpu: "2"
             limits:
               memory: "8Gi"
               cpu: "4"
           volumeMounts:
-            # Mount a shared volume to persist the model pulled by the Init Container
+            # Mount 1: The script from the ConfigMap
+            - name: script-volume
+              mountPath: /app
+            # Mount 2: The model storage (Ollama stores models in /root/.ollama)
             - name: model-storage
-              mountPath: /root/.ollama
+              mountPath: /root/.ollama 
               
-      # --- 3. SHARED VOLUME ---
       volumes:
+        # Define 1: Volume sourced from the ConfigMap
+        - name: script-volume
+          configMap:
+            name: ollama-startup-script
+            defaultMode: 0744 # Ensure the script is executable
+        # Define 2: EmptyDir volume for temporary model storage
         - name: model-storage
           emptyDir: {}
 EOF
