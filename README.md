@@ -25,27 +25,45 @@ spec:
       labels:
         app: llm-ollama
     spec:
+      # --- 1. INIT CONTAINER BLOCK ---
+      initContainers:
+      - name: pull-model
+        image: ollama/ollama:latest
+        command: ["ollama", "pull", "qwen2:0.5b"] # The command runs and exits
+        resources:
+          # Needs enough memory to run the pull command and store the model temporarily
+          requests:
+            memory: "1Gi"
+          limits:
+            memory: "2Gi"
+            
+      # --- 2. MAIN APPLICATION CONTAINER ---
       containers:
         - name: ollama-server
-          image: ollama/ollama:latest # ARM64 compatible image
+          image: ollama/ollama:latest
           ports:
-            - containerPort: 11434 # Ollama default API port
+            - containerPort: 11434
           env:
-            # Set memory request higher if using a larger model like llama3:8b
-            # Ollama downloads models to /root/.ollama, consider using a persistent volume
             - name: OLLAMA_HOST
               value: "0.0.0.0"
-              
+
           resources:
             requests:
-              # MINIMAL RESOURCE REQUESTS (Aiming for < 8Gi total)
-              memory: "6Gi" 
+              # Adjusted memory request since model is already downloaded to the shared volume
+              memory: "6Gi"
               cpu: "2"
             limits:
-              memory: "8Gi" 
-              cpu: "4" 
-          # The Ollama entrypoint will start the server. 
-          # The first API call will trigger the model download.
+              memory: "8Gi"
+              cpu: "4"
+          volumeMounts:
+            # Mount a shared volume to persist the model pulled by the Init Container
+            - name: model-storage
+              mountPath: /root/.ollama
+              
+      # --- 3. SHARED VOLUME ---
+      volumes:
+        - name: model-storage
+          emptyDir: {}
 EOF
 ```
 
