@@ -121,6 +121,8 @@ You will need a new set of YAML manifests for Open WebUI. The key configuration 
 
 ```
 cat <<EOF | kubectl apply -f -
+---
+# 1. Open WebUI Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -139,27 +141,31 @@ spec:
     spec:
       containers:
         - name: webui-server
+          # Using the recommended stable image
           image: ghcr.io/open-webui/open-webui:main
+          # Open WebUI typically runs its backend on port 8080
           ports:
-            - containerPort: 8080 # Open WebUI listens on 8080
+            - containerPort: 8080 
           env:
-            # Crucially, this connects to your existing Ollama Service
+            # Connect the WebUI to your existing Ollama service.
+            # The format is http://[Service Name]:[Service Port]
+            # Your Ollama Service is 'llm-ollama-service' on port '8080'.
             - name: OLLAMA_BASE_URL
-              # Service name:port (llm-ollama-service is listening on 8080, targetting 11434)
-              value: "http://llm-ollama-service:8080"
+              value: "http://llm-ollama-service:8080" 
+            # Set this for persistence, Open WebUI stores its SQLite DB and data here
+            - name: DATA_DIR
+              value: "/app/backend/data"
           volumeMounts:
-            # Volume for persistent data (like user accounts, chats, etc.)
-            - name: webui-data
+            # Mount volume for persistent data (user accounts, chats)
+            - name: webui-data-storage
               mountPath: /app/backend/data
       volumes:
-        # Define a Persistent Volume Claim (PVC) here for production
-        - name: webui-data
-          emptyDir: {} # Use emptyDir for quick testing, replace with PVC for persistence
-EOF
-```
-
-```
-cat <<EOF | kubectl apply -f -
+        # Define a simple EmptyDir for now, but use a PersistentVolumeClaim
+        # (PVC) for production to prevent data loss on Pod restart.
+        - name: webui-data-storage
+          emptyDir: {}
+---
+# 2. Open WebUI Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -167,11 +173,11 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: open-webui
+    app: open-webui # Matches the deployment label
   ports:
     - protocol: TCP
-      port: 8080 # Service port for the UI
-      targetPort: 8080 # Container port for Open WebUI
+      port: 8080 # Service port (chosen to match container port for simplicity)
+      targetPort: 8080 # Container port (the port Open WebUI is listening on)
 EOF
 ```
 
@@ -270,6 +276,11 @@ alias kubectl="kubecolor"
 kubectl delete deployment llm-ollama-deployment
 kubectl delete configmap ollama-startup-script
 kubectl delete service llm-ollama-service
+```
+
+```
+kubectl delete deployment open-webui-deployment
+kubectl delete svc open-webui-service
 ```
 
 ## Wizard AI Cow
