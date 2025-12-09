@@ -16,7 +16,7 @@ metadata:
   labels:
     app: llm-tgi
 spec:
-  replicas: 1 # Adjust based on your load and available GPU resources
+  replicas: 1
   selector:
     matchLabels:
       app: llm-tgi
@@ -25,40 +25,35 @@ spec:
       labels:
         app: llm-tgi
     spec:
-      # Optional: Use a node selector if you need specific GPU-enabled nodes
-      # nodeSelector:
-      #   gpu: nvidia
       volumes:
-        # Essential for TGI. TGI requires a shared memory volume for communication.
+        # TGI requires shared memory
         - name: dshm
           emptyDir:
             medium: Memory
       containers:
         - name: tgi-server
-          image: ghcr.io/huggingface/text-generation-inference:latest # Use a specific tag for production
+          image: ghcr.io/huggingface/text-generation-inference:latest 
           ports:
             - containerPort: 80 # TGI default port
           env:
-            # --- Model Configuration ---
+            # --- SMALLER MODEL CONFIGURATION ---
+            # Phi-3 Mini (3.8B parameters)
             - name: MODEL_ID
-              value: "microsoft/phi-2" # Replace with your chosen lightweight model
-            # Recommended memory size for shared memory
+              value: "microsoft/Phi-3-mini-4k-instruct" 
+            # Use quantization to reduce memory usage (AWQ is a common 4-bit method)
+            - name: QUANTIZE
+              value: "awq" 
             - name: SHARDED
-              value: "false" # Set to true for tensor parallelism (multi-GPU)
-            # --- Performance/Resource Optimization ---
-            # Set to a value like 'bitsandbytes' or 'gptq' if using quantization
-            # - name: QUANTIZE
-            #   value: "bitsandbytes" 
+              value: "false" 
             
           resources:
             requests:
-              memory: "16Gi" # Adjust based on model size
-              cpu: "4"
-              # nvidia.com/gpu: "1" # Uncomment and adjust for GPU usage
+              # MINIMAL RESOURCE REQUESTS (Aiming for < 8Gi total)
+              memory: "6Gi" 
+              cpu: "2"
             limits:
-              memory: "20Gi" # Adjust based on model size
-              cpu: "8"
-              # nvidia.com/gpu: "1" # Uncomment and adjust for GPU usage
+              memory: "8Gi" 
+              cpu: "4" 
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
