@@ -1,4 +1,4 @@
-# huggingface-kubernetes
+# Hugging Face Kubernetes
 Demo of HuggingFace AI app running on Kubernetes
 
 ## LLM Deployment Template
@@ -116,3 +116,10 @@ curl $SERVICE_URL/v1/chat/completions \
 ```
 
 This method is ideal for local testing as it requires no cloud resources and avoids the complexity of setting up an Ingress Controller or external Load Balancer in your local environment.
+
+
+## Cleanup
+```
+kubectl delete deployment llm-tgi-deployment
+kubectl delete service llm-tgi-service
+```
