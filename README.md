@@ -188,7 +188,8 @@ kubectl logs --selector=app=llm-ollama -f
 ```
 ```events``` from pods
 ```
-kubectl get events --field-selector involvedObject.name=llm-ollama-deployment-85677d8dc8-w5lqr -w
+POD_NAME=$(kubectl get pods -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+kubectl get events --field-selector involvedObject.name=${POD_NAME} -w
 ```
 Pods ```Status```
 ```
