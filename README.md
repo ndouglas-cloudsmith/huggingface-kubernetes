@@ -78,7 +78,7 @@ ollama run mixtral:8x22b
 ```
 
 
-| Model Family | Vendor | Recommended Variant | Size | Key Advantages | Typical VRAM/RAM Needs |
+| Model Family | Vendor | Recommended Variant | Model Size | Key Advantages | Typical VRAM/RAM Needs |
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | Qwen 2 | AliBaba | Qwen 2 72B | ```352 MB``` | If you want to stick with the Qwen family, the 72B model is a massive upgrade and highly competitive with Llama 3 70B. | 40GB+ RAM / 24GB+ VRAM (Quantised). |
 | Llama 3 | Meta | Llama 3 70B Instruct (Quantised) | ```4.7 GB``` | If you have serious GPU power (24GB+ VRAM), this model provides flagship performance, excellent for debugging, complex architectures, and advanced coding. | 32GB+ RAM / 24GB+ VRAM (e.g., a high-end card or multiple cards). |
