@@ -150,7 +150,7 @@ helm install kube-prom-stack prometheus-community/kube-prometheus-stack --namesp
 
 Check pod status
 ```
-kubectl --namespace monitoring get pods -l "release=kube-prom-stack"
+kubectl --namespace monitoring get pods
 ```
 
 Get Grafana '```admin```' password by running:
@@ -160,7 +160,7 @@ kubectl --namespace monitoring get secrets kube-prom-stack-grafana -o jsonpath="
 
 ```Port-forward``` to access the Grafana dashboard on ```localhost:4000```
 ```
-kubectl --namespace monitoring port-forward $POD_NAME 4000:3000
+kubectl --namespace monitoring port-forward deployment/kube-prom-stack-grafana --address 0.0.0.0 4000:3000
 ```
 
 
