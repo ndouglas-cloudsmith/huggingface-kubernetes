@@ -6,3 +6,4 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 
 # Testing a bigger, better model with slow response times
 curl -s http://localhost:8080/api/generate -d '{"model": "llama3:8b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq 'del(.context)'
+curl -s http://localhost:8080/api/generate -d '{"model": "llama3:8b", "prompt": "What do you know about the software company - Cloudsmith?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq 'del(.context)'
