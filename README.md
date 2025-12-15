@@ -198,7 +198,11 @@ kubectl get all -n llm
 
 You should see your image locally:
 ```
-docker images
+docker images | awk '
+  /REPOSITORY/ { print; next }
+  /ollama\/ollama|ghcr.io\/open-webui\/open-webui/ { print "\033[31m" $0 "\033[0m"; next }
+  { print }
+'
 ```
 
 You'll still need to ```port-forward``` both service to interact with them: <br/>
