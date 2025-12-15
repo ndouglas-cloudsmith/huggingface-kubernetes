@@ -21,6 +21,14 @@ docker images | awk '
 '
 ```
 
+It's also worth checking-out the file size of those newly-introduced images:
+```
+kubectl get pods -A -o=custom-columns='POD_NAME:.metadata.name,CONTAINER_IMAGES:.spec.containers[*].image'
+docker images ollama/ollama --format "{{.Size}}" | sed 's/.*/\x1b[31m&\x1b[0m/'
+docker images ghcr.io/open-webui/open-webui --format "{{.Size}}" | sed 's/.*/\x1b[31m&\x1b[0m/'
+docker images quay.io/prometheus/alertmanager --format "{{.Size}}" | sed 's/.*/\x1b[31m&\x1b[0m/'
+```
+
 You'll still need to ```port-forward``` both service to interact with them: <br/>
 Make sure to do this in separate terminal tabs to avoid breaking connections.
 ```
