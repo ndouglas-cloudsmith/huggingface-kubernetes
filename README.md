@@ -185,6 +185,26 @@ EOF
 kubectl port-forward svc/open-webui-service 3000:8080
 ```
 
+## Quickstart Deployment
+Install everything:
+```
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
+```
+
+Make sure everything is running in the ```llm``` network namespace:
+```
+kubectl get all -n llm
+```
+
+You'll still need to ```port-forward``` both service to interact with them: <br/>
+Make sure to do this in separate terminal tabs to avoid breaking connections.
+```
+kubectl port-forward svc/llm-ollama-service -n llm 8080:8080
+```
+```
+kubectl port-forward svc/open-webui-service -n llm 3000:8080
+```
+
 
 ### Interact with the AI
 
