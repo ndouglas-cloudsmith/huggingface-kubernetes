@@ -213,6 +213,43 @@ kubectl port-forward svc/llm-ollama-service -n llm 8080:8080
 ```
 kubectl port-forward svc/open-webui-service -n llm 3000:8080
 ```
+Check ```labels``` associated with pods:
+```
+kubectl get pods -n llm --show-labels
+```
+Confirm the ```images``` associated with your pods:
+```
+kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[*].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[*].restartCount,AGE:.metadata.creationTimestamp,IMAGE:.spec.containers[*].image'
+```
+
+## LLM02:2025 Sensitive Information Disclosure
+
+1. **Sanitisation** - Integrate Data Sanitisation Techniques & Robust Input Validation
+2. **Access Controls** - Enforce strict RBAC & Restrict Data Sources
+3. **Privacy Techniques** - Utilize Federated Learning & Incorporate Differential Privacy
+4. **User Education** - Educate Users on Safe LLM Usage & Ensure Transparency in Data Usage
+```
+kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
+ls -al /root/
+```
+
+#### List Installed Models
+First, check if any models are already installed (you should have a ```qwen2:0.5b``` model installed):
+```
+ollama list
+```
+
+You can literally delete the model at any time:
+```
+ollama rm qwen2:0.5b
+```
+
+Don't worry: You can reinstall this small model quite easily with the below command:
+```
+ollama run qwen2:0.5b
+```
+
+---------
 
 
 ### Interact with the AI
