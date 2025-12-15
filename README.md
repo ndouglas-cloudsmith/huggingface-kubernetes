@@ -145,6 +145,7 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 ## Grafana data visualisation
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
 helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
   --create-namespace \
