@@ -298,14 +298,7 @@ alias kubectl="kubecolor"
 
 ## Cleanup
 ```
-kubectl delete deployment llm-ollama-deployment
-kubectl delete configmap ollama-startup-script
-kubectl delete service llm-ollama-service
-```
-
-```
-kubectl delete deployment open-webui-deployment
-kubectl delete svc open-webui-service
+kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
 ```
 
 ## Wizard AI Cow
