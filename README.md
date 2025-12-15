@@ -129,6 +129,41 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 
 <br/><br/><br/><br/>
 
+## Wizard AI Cow
+If you have [cowsay](https://pypi.org/project/cowsay/) already installed locally, you can pipe the AI response into the cows dialogue box.
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq -r '.response' | cowsay 
+```
+
+Low-quality quality AI cow results:
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq -r '.response' | cowsay -W 150 -f tux
+```
+
+<br/><br/><br/><br/>
+
+## Grafana data visualisation
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install kube-prom-stack prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+```
+
+Check pod status
+```
+kubectl --namespace monitoring get pods -l "release=kube-prom-stack"
+```
+
+Get Grafana '```admin```' password by running:
+```
+kubectl --namespace monitoring get secrets kube-prom-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+```
+
+```Port-forward``` to access the Grafana dashboard on ```localhost:4000```
+```
+kubectl --namespace monitoring port-forward $POD_NAME 4000:3000
+```
+
+
 ## Troubleshooting
 ```Describe``` pods
 ```
@@ -155,15 +190,5 @@ alias kubectl="kubecolor"
 ## Cleanup
 ```
 kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
-```
-
-## Wizard AI Cow
-If you have [cowsay](https://pypi.org/project/cowsay/) already installed locally, you can pipe the AI response into the cows dialogue box.
-```
-curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq -r '.response' | cowsay 
-```
-
-Low-quality quality AI cow results:
-```
-curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq -r '.response' | cowsay -W 150 -f tux
+helm uninstall kube-prom-stack -n monitoring
 ```
