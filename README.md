@@ -147,10 +147,10 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --create-namespace \
+  --namespace monitoring --create-namespace \
   --set prometheus-node-exporter.hostRootfs=false \
-  --set 'prometheus-node-exporter.extraArgs[0]=--collector.filesystem.mount-points-exclude=^/var/lib/docker/.+|/var/lib/kubelet/pods/.+$'
+  --set prometheus-node-exporter.collectors.enable='diskstats,filefd,loadavg,meminfo,netdev,netstat,stat,time,vmstat' \
+  --set prometheus-node-exporter.collectors.disable='netifaces'
 ```
 
 Check pod status
