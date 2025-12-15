@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llm
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ollama-startup-script
+  namespace: llm
+data:
+  # The startup script for the Ollama server and model pull.
+  startup.sh: |
+    #!/bin/bash
+    
+    # 1. Start the Ollama server process in the background.
+    /usr/bin/ollama serve &
+    
+    # 2. Wait for the server to initialize.
+    sleep 5
+    
+    # 3. Pull the required model using the Ollama client utility.
+    echo "Starting model pull for qwen2:0.5b..."
+    /usr/bin/ollama pull qwen2:0.5b
+    
+    # 4. Keep the container alive by waiting for the background server process.
+    wait
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-ollama-deployment
+  namespace: llm # ADDED
+  labels:
+    app: llm-ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-ollama
+  template:
+    metadata:
+      labels:
+        app: llm-ollama
+    spec:
+      containers:
+        - name: ollama-server
+          image: docker.cloudsmith.io/acme-corporation/acme-repo-one/ollama:latest
+          command: ["/bin/bash", "/app/startup.sh"]
+          ports:
+            - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+          resources:
+            requests:
+              memory: "6Gi"
+              cpu: "2"
+            limits:
+              memory: "8Gi"
+              cpu: "4"
+          volumeMounts:
+            - name: script-volume
+              mountPath: /app
+            - name: model-storage
+              mountPath: /root/.ollama
+              
+      volumes:
+        - name: script-volume
+          configMap:
+            name: ollama-startup-script
+            defaultMode: 0744
+        - name: model-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-ollama-service
+  namespace: llm
+spec:
+  type: ClusterIP
+  selector:
+    app: llm-ollama
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 11434
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui-deployment
+  namespace: llm
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+        - name: webui-server
+          image: ghcr.io/open-webui/open-webui:main
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OLLAMA_BASE_URL
+              value: "http://llm-ollama-service:8080"
+            - name: DATA_DIR
+              value: "/app/backend/data"
+          volumeMounts:
+            - name: webui-data-storage
+              mountPath: /app/backend/data
+      volumes:
+        - name: webui-data-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui-service
+  namespace: llm # ADDED
+spec:
+  type: ClusterIP
+  selector:
+    app: open-webui
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
