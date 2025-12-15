@@ -69,21 +69,16 @@ Type the below command to ```leave``` the AI chat:
 ```
 /bye
 ```
----------
+
+<br/><br/><br/><br/>
 
 
 ### Interact with the AI
 
-Define the Pod Variable (if not already done):
-
-```
-export OLLAMA_POD=$(kubectl get pods --selector=app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
-```
-
 Run the ollama pull command for ```Qwen2:0.5B``` (```300 MB``` - ```0.5 Parameters```:
 
 ```
-kubectl exec -it $OLLAMA_POD -- ollama pull qwen2:0.5b
+kubectl exec -it -n llm --selector=app=llm-ollama -- ollama pull qwen2:0.5b
 ```
 
 Once the ```ollama pull``` command reports the model is successfully downloaded, it is ready to serve requests immediately. <br/>
@@ -132,7 +127,7 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 2. **Minimise** ```repeat_penalty```: Set it to ```1.0``` (or ```0.0``` if your system supports it, as that eliminates the penalty completely). This allows the model to get stuck in loops, repeating the same words or phrases endlessly.
 3. Set ```top_k``` and ```top_p``` to their widest possible range (or max value): This ensures the model considers virtually every word in its vocabulary at each step, regardless of how improbable it is.
 
-<br/><br/>
+<br/><br/><br/><br/>
 
 ## Troubleshooting
 ```Describe``` pods
