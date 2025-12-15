@@ -65,6 +65,27 @@ Don't worry: You can ```reinstall``` this small model quite easily with the belo
 ollama run qwen2:0.5b
 ```
 
+```Llama 3:8B``` Instruct: This is currently the industry leader for models sub-```10 Billion``` parameters, offering the best combination of speed, reasoning, and efficiency. <br/>
+It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, so far too big for small demos.
+```
+ollama run llama3:8b
+```
+
+Don't install this example on your homelab. <br/>
+It's way too **BIG** - ```79GB```
+```
+ollama run mixtral:8x22b
+```
+
+
+| Model Family | Vendor | Recommended Variant | Size | Key Advantages | Typical VRAM/RAM Needs |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| Qwen 2 | AliBaba | Qwen 2 72B | ```352 MB``` | If you want to stick with the Qwen family, the 72B model is a massive upgrade and highly competitive with Llama 3 70B. | 40GB+ RAM / 24GB+ VRAM (Quantised). |
+| Llama 3 | Meta | Llama 3 70B Instruct (Quantised) | ```4.7 GB``` | If you have serious GPU power (24GB+ VRAM), this model provides flagship performance, excellent for debugging, complex architectures, and advanced coding. | 32GB+ RAM / 24GB+ VRAM (e.g., a high-end card or multiple cards). |
+| Mistral | Mistral AI | Mixtral 8x22B | ```79 GB``` | Extremely powerful SMoE model. Top-tier reasoning and coding abilities while being relatively efficient for its performance class. | 40GB+ RAM / 16GB+ VRAM (Quantised). |
+
+<br/><br/>
+
 Type the below command to ```leave``` the AI chat:
 ```
 /bye
