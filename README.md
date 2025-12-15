@@ -239,16 +239,20 @@ First, check if any models are already installed (you should have a ```qwen2:0.5
 ollama list
 ```
 
-You can literally delete the model at any time:
+You can literally ```delete``` the model at any time:
 ```
 ollama rm qwen2:0.5b
 ```
 
-Don't worry: You can reinstall this small model quite easily with the below command:
+Don't worry: You can ```reinstall``` this small model quite easily with the below command:
 ```
 ollama run qwen2:0.5b
 ```
 
+Type the below command to ```leave``` the AI chat:
+```
+/bye
+```
 ---------
 
 
