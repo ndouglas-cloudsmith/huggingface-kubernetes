@@ -74,13 +74,13 @@ ollama run qwen2:0.5b
 ```
 
 ```Llama 3:8B``` Instruct: This is currently the industry leader for models sub-```10 Billion``` parameters, offering the best combination of speed, reasoning, and efficiency. <br/>
-It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, so far too big for small demos.
+It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, often too big for small demos.
 ```
 ollama run llama3:8b
 ```
 
 Don't install this example on your homelab. <br/>
-It's way too **BIG** - ```79GB```
+It's way too **BIG** for a homelab - ```79GB```
 ```
 ollama run mixtral:8x22b
 ```
@@ -201,15 +201,15 @@ kubectl --namespace monitoring port-forward deployment/kube-prom-stack-grafana -
 ## Troubleshooting
 ```Describe``` pods
 ```
-kubectl describe pod $(kubectl get pods --selector=app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+kubectl describe pod $(kubectl get pods -n llm --selector=app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
 ```
 ```Logs``` from pods
 ```
-kubectl logs --selector=app=llm-ollama -f
+kubectl logs -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -f
 ```
 ```events``` from pods
 ```
-POD_NAME=$(kubectl get pods -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+POD_NAME=$(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
 kubectl get events --field-selector involvedObject.name=${POD_NAME} -w
 ```
 Pods ```Status```
