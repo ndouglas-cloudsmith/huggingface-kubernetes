@@ -196,6 +196,11 @@ Make sure everything is running in the ```llm``` network namespace:
 kubectl get all -n llm
 ```
 
+You should see your image locally:
+```
+docker images
+```
+
 You'll still need to ```port-forward``` both service to interact with them: <br/>
 Make sure to do this in separate terminal tabs to avoid breaking connections.
 ```
