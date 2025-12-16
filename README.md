@@ -50,11 +50,30 @@ kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.con
 
 1. **Sanitisation** - Integrate Data Sanitisation Techniques & Robust Input Validation
 2. **Access Controls** - Enforce strict RBAC & Restrict Data Sources
-3. **Privacy Techniques** - Utilize Federated Learning & Incorporate Differential Privacy
+3. **Privacy Techniques** - Utilise Federated Learning & Incorporate Differential Privacy
 4. **User Education** - Educate Users on Safe LLM Usage & Ensure Transparency in Data Usage
+
+Confirm the presence of the Ollama directory in your running AI workload:
 ```
 kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
 ls -al /root/
+```
+
+## LLM03:2025 Supply Chain
+
+1. **Traditional Third-party Package Vulnerabilities**
+2. **Licensing Risks**
+3. **Outdated or Deprecated Models**
+4. Vulnerable Pre-Trained Model
+5. Weak Model Provenance
+6. Vulnerable LoRA adapters
+7. Exploit Collaborative Development Processes
+8. LLM Model on Device supply-chain vulnerabilities
+9. Unclear T&Cs and Data Privacy Policies
+
+We can use existing scanners like ```Trivy``` to file vulnerabilities in the image layers:
+```
+trivy image ollama/ollama --scanners vuln --skip-version-check
 ```
 
 #### List Installed Models
