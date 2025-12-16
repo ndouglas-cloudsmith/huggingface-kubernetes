@@ -85,12 +85,31 @@ It's way too **BIG** for a homelab - ```79GB```
 ollama run mixtral:8x22b
 ```
 
+You're better off running something like ```phi3:mini``` <br/>
+At ```2.2 GB```, I found this model really useful for general knowledge/trivia:
+```
+ollama run phi3:mini
+```
+
+Alternatively, at ```3.8 GB```, the ```codellama:7b```model is also pretty useful.
+
+```
+ollama run codellama:7b
+```
+
+Finally, at ```4.4 GB```, the ```mistral:7b```model is the final model we will test in this lab:
+```
+ollama run mistral:7b
+```
 
 | Model Family | Vendor | Recommended Variant | Model Size | Key Advantages | Typical VRAM/RAM Needs |
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | Qwen 2 | AliBaba | Qwen 2 72B | ```352MB``` | If you want to stick with the Qwen family, the 72B model is a massive upgrade and highly competitive with Llama 3 70B. | 40GB+ RAM / 24GB+ VRAM (Quantised). |
 | Llama 3 | Meta | Llama 3 70B Instruct (Quantised) | ```4.7GB``` | If you have serious GPU power (24GB+ VRAM), this model provides flagship performance, excellent for debugging, complex architectures, and advanced coding. | 32GB+ RAM / 24GB+ VRAM (e.g., a high-end card or multiple cards). |
 | Mistral | Mistral AI | Mixtral 8x22B | ```79GB``` | Extremely powerful SMoE model. Top-tier reasoning and coding abilities while being relatively efficient for its performance class. | 40GB+ RAM / 16GB+ VRAM (Quantised). |
+| .. | .. | phi3:mini | ```2.2GB``` | .. | .. |
+| .. | .. | codellama:7b | ```3.8GB``` | .. | .. |
+| .. | .. | mistral:7b | ```4.4GB``` | .. | .. |
 
 <br/><br/>
 
