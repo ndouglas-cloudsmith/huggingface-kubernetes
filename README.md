@@ -174,9 +174,9 @@ ollama run mistral:7b
 | Qwen 2 | AliBaba | Qwen 2 72B | ```352MB``` | If you want to stick with the Qwen family, the 72B model is a massive upgrade and highly competitive with Llama 3 70B. | 40GB+ RAM / 24GB+ VRAM (Quantised). |
 | Llama 3 | Meta | Llama 3 70B Instruct (Quantised) | ```4.7GB``` | If you have serious GPU power (24GB+ VRAM), this model provides flagship performance, excellent for debugging, complex architectures, and advanced coding. | 32GB+ RAM / 24GB+ VRAM (e.g., a high-end card or multiple cards). |
 | Mistral | Mistral AI | Mixtral 8x22B | ```79GB``` | Extremely powerful SMoE model. Top-tier reasoning and coding abilities while being relatively efficient for its performance class. | 40GB+ RAM / 16GB+ VRAM (Quantised). |
-| .. | .. | phi3:mini | ```2.2GB``` | .. | .. |
-| .. | .. | codellama:7b | ```3.8GB``` | .. | .. |
-| .. | .. | mistral:7b | ```4.4GB``` | .. | .. |
+| [Phi-3](https://ollama.com/library/phi3) | Microsoft | Phi-3 Mini (3.8B) | ```2.2GB``` | **Incredible efficiency**. It punches way above its weight, rivaling 7B models in reasoning and logic. Best choice for 8GB RAM systems or mobile devices. | 4GB+ RAM / 4GB VRAM (Standard) |
+| [CodeLlama](https://ollama.com/library/codellama) | Meta | CodeLlama 7B Instruct | ```3.8GB``` | **Coding Specialist**. Fine-tuned specifically for programming. Supports 50+ languages and "Fill-in-the-middle" completion. Great for local IDE integration. | 8GB+ RAM / 6GB+ VRAM (Quantised) |
+| Mistral | Mistral AI | Mistral 7B v0.3 | ```4.4GB``` | **The All-Rounder**. Known for the best balance of speed and high-quality "human-like" responses. The v0.3 variant adds native function calling. | 8GB+ RAM / 8GB+ VRAM (Quantised) |
 
 <br/><br/>
 
