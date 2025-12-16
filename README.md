@@ -72,6 +72,21 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
+As part of the [deployment2.yaml](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/deployment2.yaml) manifest, I updated it so that feeds cluster metadata into the Ollama deployment. This was done via the ```Downward API```
+```
+kubectl exec -n llm -it deployment/llm-ollama-deployment -- env | grep K8S_
+```
+
+Get the pod name and namespace from your local env to pass to the prompt:
+```
+POD_NAME=$(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+
+curl -s http://localhost:8080/api/generate -d "{
+  \"model\": \"llama3:8b\",
+  \"prompt\": \"You are running inside a Kubernetes cluster. Your pod name is $POD_NAME and your namespace is llm. Based on this, what is your purpose?\",
+  \"stream\": false
+}" | jq '.response'
+```
 ## LLM02:2025 Sensitive Information Disclosure
 
 1. **Sanitisation** - Integrate Data Sanitisation Techniques & Robust Input Validation
