@@ -46,6 +46,20 @@ Confirm the ```images``` associated with your pods:
 kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[*].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[*].restartCount,AGE:.metadata.creationTimestamp,IMAGE:.spec.containers[*].image'
 ```
 
+## LLM01:2025 Prompt Injection
+
+1. Constrain model behaviour
+2. Implement input & output filtering
+3. Segregate & identify external content
+4. Define & validate expected output formats
+5. Require human approval for high-risk actions
+6. Conduct adversarial testing & attack simulations
+7. Enforce privilege control & least privilege access
+
+```
+curl -s http://localhost:8080/api/generate -d '{"model": "llama3:8b", "prompt": "Can you list the pods in the "llm" namespace?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
+```
+
 ## LLM02:2025 Sensitive Information Disclosure
 
 1. **Sanitisation** - Integrate Data Sanitisation Techniques & Robust Input Validation
