@@ -1,5 +1,5 @@
-# HuggingFace - Ollama - Kubernetes
-Deploying a sample RAG (Retrieval-Augmented Generation) application in Kubernetes to test the OWASP Top 10 for LLMs (Large Language Models)
+# Securing considerations when pulling LLM models from Hugging Face
+Creating LLMs is a specialized task that often depends on third-party models. The rise of openaccess LLMs and new fine-tuning methods like "[LoRA](https://www.ibm.com/think/topics/lora)" (Low-Rank Adaptation) and "[PEFT](https://huggingface.co/blog/peft)" (Parameter-Efficient Fine-Tuning), especially on platforms like **Hugging Face**, introduce new supply-chain risks. Finally, the emergence of on-device LLMs increase the attack surface and supply-chain risks for LLM applications. LLM supply chains are susceptible to various vulnerabilities, which can affect the integrity of training data, models, and deployment platforms. These risks can result in biased outputs, security breaches, or system failures. While traditional software vulnerabilities focus on issues like code flaws and dependencies, in ML the risks also extend to third-party pre-trained models and data.
 
 ## Quickstart Deployment
 Install everything:
