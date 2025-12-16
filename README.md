@@ -74,6 +74,7 @@ ls -al /root/
 We can use existing scanners like ```Trivy``` to file vulnerabilities in the image layers:
 ```
 trivy image ollama/ollama --scanners vuln --skip-version-check
+trivy image ghcr.io/open-webui/open-webui --scanners vuln --skip-version-check --severity CRITICAL
 ```
 
 #### List Installed Models
