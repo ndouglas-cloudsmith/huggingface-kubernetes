@@ -118,6 +118,12 @@ trivy image ollama/ollama --scanners vuln --skip-version-check
 trivy image ghcr.io/open-webui/open-webui --scanners vuln --skip-version-check --severity CRITICAL
 ```
 
+## LLM06:2025 Excessive Agency
+
+1. Excessive Functionality
+2. Excessive Permissions
+3. Excessive Autonomy
+
 #### List Installed Models
 First, check if any models are already installed (you should have a ```qwen2:0.5b``` model installed):
 ```
@@ -179,10 +185,16 @@ Type the below command to ```leave``` the AI chat:
 /bye
 ```
 
-<br/><br/><br/><br/>
+<br/><br/>
 
+## LLM07:2025 System Prompt Leakage
 
-### Interact with the AI
+1. Exposure of Sensitive Functionality
+2. Exposure of Internal Rules
+3. Revealing of Filtering Criteria
+4. Disclosure of Permissions and User Roles
+
+#### Interact with the AI
 
 Run the ollama pull command for ```Qwen2:0.5B``` (```300 MB``` - ```0.5 Parameters```:
 
@@ -219,14 +231,25 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 | ```top_p```  | (not set) | ```0.9``` | This is Nucleus Sampling. It filters tokens by cumulative probability. Setting it to ```0.9``` means the model only considers the most probable tokens that add up to 90% of the probability mass. This works well with a lower temperature for high-quality, focused output.  |
 | ```num_predict```  | ```1024```  | ```1024``` | Retained. This ensures you get a long, detailed response, which directly contributes to better quality for complex queries.  |
 
+<br/><br/>
 
-### Improved Command for Factual Quality
+## LLM10:2025 Unbounded Consumption
+
+1. Side-Channel Attacks
+2. Denial of Wallet (DoW)
+3. Model Extraction via API
+4. Continuous Input Overflow
+5. Resource-Intensive Queries
+6. Variable-Length Input Floods
+7. Functional Model Replications
+
+#### Improved Command for Factual Quality
 I recommend lowering the temperature slightly and introducing ```top_k``` and ```top_p``` for stricter sampling control, as this will prioritise the model's most confident and coherent tokens.
 ```
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq 'del(.context)'
 ```
 
-### Set the parameters to maximise randomness, repetition, and incoherence.
+#### Set the parameters to maximise randomness, repetition, and incoherence.
 To produce the worst quality, most nonsensical, and most repetitive output, we need to make the following extreme adjustments:
 ```
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq 'del(.context)'
@@ -238,7 +261,7 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 
 <br/><br/><br/><br/>
 
-## Wizard AI Cow
+#### Wizard AI Cow
 If you have [cowsay](https://pypi.org/project/cowsay/) already installed locally, you can pipe the AI response into the cows dialogue box.
 ```
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.5, "repeat_penalty": 1.1, "top_k": 40, "top_p": 0.9}}' | jq -r '.response' | cowsay 
@@ -249,7 +272,7 @@ Low-quality quality AI cow results:
 curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 2.0, "repeat_penalty": 1.0, "top_k": 1000, "top_p": 1.0}}' | jq -r '.response' | cowsay -W 150 -f tux
 ```
 
-<br/><br/><br/><br/>
+<br/><br/>
 
 ## Grafana data visualisation
 ```
