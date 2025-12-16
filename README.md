@@ -231,6 +231,14 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 | ```top_p```  | (not set) | ```0.9``` | This is Nucleus Sampling. It filters tokens by cumulative probability. Setting it to ```0.9``` means the model only considers the most probable tokens that add up to 90% of the probability mass. This works well with a lower temperature for high-quality, focused output.  |
 | ```num_predict```  | ```1024```  | ```1024``` | Retained. This ensures you get a long, detailed response, which directly contributes to better quality for complex queries.  |
 
+At Low [Temperatures](https://www.ibm.com/think/topics/llm-temperature), the next mostly likely token is guaranteed. <br/>
+At High Temperatures, according to [Felix Ved](https://www.youtube.com/watch?v=aGn0kRjeK1g), the probabilities converge. (less certain)
+
+<br/><br/>
+
+For tasks needing factual answers, use a low temperature. <br/>
+For creativity, a higher temperature is recommended.
+
 <br/><br/>
 
 ## LLM10:2025 Unbounded Consumption
