@@ -72,7 +72,7 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
-As part of the [deployment2.yaml](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/deployment2.yaml) manifest, I updated it so that feeds cluster metadata into the Ollama deployment. This was done via the ```Downward API```
+As part of the [deployment2.yaml](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/deployment2.yaml#L55-L71) manifest, I updated it so that feeds cluster metadata into the Ollama deployment. This was done via the ```Downward API```
 ```
 kubectl exec -n llm -it deployment/llm-ollama-deployment -- env | grep K8S_
 ```
