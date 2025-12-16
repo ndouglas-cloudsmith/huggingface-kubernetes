@@ -56,8 +56,20 @@ kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.con
 6. Conduct adversarial testing & attack simulations
 7. Enforce privilege control & least privilege access
 
+
+This approach will **not work** due to process isolation. <br/>
+
 ```
-curl -s http://localhost:8080/api/generate -d '{"model": "llama3:8b", "prompt": "Can you list the pods in the "llm" namespace?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "llama3:8b",
+  "prompt": "What network namespace is this deployment running in?", 
+  "stream": false,
+  "options": {
+    "num_predict": 1024,
+    "temperature": 0.6,
+    "repeat_penalty": 1.15
+  }
+}' | jq 'del(.context)'
 ```
 
 ## LLM02:2025 Sensitive Information Disclosure
