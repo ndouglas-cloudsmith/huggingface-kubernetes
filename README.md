@@ -234,12 +234,12 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 At Low [Temperatures](https://www.ibm.com/think/topics/llm-temperature), the next mostly likely token is guaranteed. <br/>
 At High Temperatures, according to [Felix Ved](https://www.youtube.com/watch?v=aGn0kRjeK1g), the probabilities converge. (less certain)
 
-<br/><br/>
+
 
 For tasks needing factual answers, use a low temperature. <br/>
 For creativity, a higher temperature is recommended.
 
-<br/><br/>
+<br/>
 
 ## LLM10:2025 Unbounded Consumption
 
