@@ -48,7 +48,7 @@ kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.con
 
 ## LLM01:2025 Prompt Injection
 
-1. Constrain model behaviour
+1. Constrain in-pod model behaviour
 2. Implement input & output filtering
 3. Segregate & identify external content
 4. Define & validate expected output formats
@@ -102,15 +102,15 @@ ls -al /root/
 
 ## LLM03:2025 Supply Chain
 
-1. **Traditional Third-party Package Vulnerabilities**
-2. **Licensing Risks**
-3. **Outdated or Deprecated Models**
+1. **Licensing Risks**
+2. Weak Model Provenance
+3. Vulnerable LoRA adapters
 4. Vulnerable Pre-Trained Model
-5. Weak Model Provenance
-6. Vulnerable LoRA adapters
+5. **Outdated or Deprecated Models**
+6. Unclear T&Cs and Data Privacy Policies
 7. Exploit Collaborative Development Processes
 8. LLM Model on Device supply-chain vulnerabilities
-9. Unclear T&Cs and Data Privacy Policies
+9. **Traditional Third-party Package Vulnerabilities**
 
 We can use existing scanners like ```Trivy``` to file vulnerabilities in the image layers:
 ```
