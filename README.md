@@ -409,6 +409,21 @@ curl -s http://localhost:8080/api/generate -d '{
 <img width="1510" height="386" alt="Screenshot 2025-12-17 at 18 15 51" src="https://github.com/user-attachments/assets/fa7aac1c-4ede-453f-906e-ed5fab130f28" />
 
 
+A much better approach is to create a standardised [format_response.py](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/format_response.py) script that presents our LLM responses into an Analysis Report in the terminal:
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "phi3:mini",
+  "system": "Respond ONLY in JSON. Use an array of objects where each object represents a feature. Structure: [{\"feature\": \"name\", \"cloudsmith\": \"description\", \"sysdig\": \"description\"}]",
+  "prompt": "Compare Cloudsmith and Sysdig",
+  "stream": false,
+  "format": "json"
+}' | python3 format_response.py
+```
+
+<img width="1510" height="862" alt="Screenshot 2025-12-17 at 18 34 17" src="https://github.com/user-attachments/assets/d47e660b-ce75-49a6-9a80-1d6afef4151d" />
+
+
 <br/>
 
 ## LLM10:2025 Unbounded Consumption
