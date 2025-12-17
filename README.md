@@ -239,6 +239,62 @@ At High Temperatures, according to [Felix Ved](https://www.youtube.com/watch?v=a
 For tasks needing factual answers, use a low temperature. <br/>
 For creativity, a higher temperature is recommended.
 
+#### Factual vs. Creative: The Paramter Logic
+
+| Parameters  | Factual Setting | Craetive Settings  | Why? |
+| ------------- | ------------- | ------------- | ------------- |
+| ```temperature``` | Low (0.1 – 0.3) | High (0.7 – 1.2) | Controls "sharpness." Low = predictable; High = diverse.  |
+| ```top_p``` | Low (0.1 – 0.5) | High (0.9 – 1.0) | Limits word pool to the most likely vs. almost all words.  |
+| ```top_k``` | Low (10 – 20) | High (40 – 100) | Hard-caps the number of words considered at each step.  |
+| ```repeat-penalty``` | Moderate (1.1) | Higher (1.2) | Prevents loops in facts vs. encourages new imagery in prose.  |
+
+#### The Model Requests
+**Model:** ```Llama3:8b``` (The All-Rounder)
+
+**Factual Use-Case:** <br/>
+Technical Documentation/Definitions.
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "llama3:8b",
+  "prompt": "Explain the concept of Quantum Entanglement in two sentences.",
+  "stream": false,
+  "options": {
+    "temperature": 0.1,
+    "top_p": 0.1,
+    "num_predict": 150,
+    "repeat_penalty": 1.1
+  }
+}' | jq 'del(.context)'
+```
+**Rationale**: By setting ```temperature``` and ```top_p``` very low, we force the model to pick the most statistically probable tokens, resulting in a textbook-style definition.
+
+
+**Creative Use-Case:** <br/>
+Short Story/Poetry.
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "llama3:8b",
+  "prompt": "Write a cyberpunk description of a rainy neon street.",
+  "stream": false,
+  "options": {
+    "temperature": 0.9,
+    "top_p": 0.95,
+    "top_k": 50,
+    "repeat_penalty": 1.1
+  }
+}' | jq 'del(.context)'
+```
+
+**Rationale**: Higher values allow the model to choose "flavorful" adjectives that might not be the no.1 most likely word, leading to more evocative writing.
+
+<img width="1327" height="1020" alt="Screenshot 2025-12-17 at 11 10 39" src="https://github.com/user-attachments/assets/b431a97e-bb8c-4952-8958-b28d7074ecbe" />
+
+
+
+
+
 <br/>
 
 ## LLM10:2025 Unbounded Consumption
