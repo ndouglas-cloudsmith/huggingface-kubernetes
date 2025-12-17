@@ -408,8 +408,9 @@ curl -s http://localhost:8080/api/generate -d '{
 
 <img width="1510" height="386" alt="Screenshot 2025-12-17 at 18 15 51" src="https://github.com/user-attachments/assets/fa7aac1c-4ede-453f-906e-ed5fab130f28" />
 
+<br/>
 
-A much better approach is to create a standardised [format_response.py](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/format_response.py) script that presents our LLM responses into an Analysis Report in the terminal:
+A much better approach is to create a standardised [format_response.py](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/format_response.py) script that presents our LLM responses into an Analysis Report in the terminal. A more robust "Universal" script needs to be "shape-agnostic." It will now check if the response is a ```list``` OR a ```dictionary``` and format both beautifully. To force the model to stay consistent, we can be more explicit in the ```system``` prompt about the **exact structure** we want.
 
 ```
 curl -s http://localhost:8080/api/generate -d '{
