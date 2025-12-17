@@ -366,6 +366,35 @@ curl -s http://localhost:8080/api/generate -d '{
 | Balanced | 0.7| 0.9 | 40 | 1.1 |
 | Wildly Creative | 1.2+ | 1.0 | 100 | 1.2+|
 
+
+## Building Tables
+
+**Model:** ```Phi3:mini``` (The Concise Reasoning Model)
+Align the "**System**" and "**Format**": I need the output to be JSON, so I define a specific ```JSON Schema``` in the **system prompt**. <br/>
+Asking for a "table" inside JSON is contradictory. For factual comparisons between technical products, a temperature of **1.3** is far too volatile. <br/>
+As a result, I lowered this to **0.2** or **0.3** to ensure the model sticks to known facts rather than getting "creative."
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "phi3:mini",
+  "system": "You are a technical analyst. Compare Cloudsmith and Sysdig. Respond ONLY in JSON format using the following keys: comparison_points (an array of objects with keys: feature, cloudsmith, sysdig).",
+  "prompt": "Compare Cloudsmith and Sysdig focusing on their primary use cases: Package Management vs Container Security.",
+  "stream": false,
+  "format": "json",
+  "options": {
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "num_predict": 500,
+    "repeat_penalty": 1.1
+  }
+}' | jq '.response | fromjson'
+```
+
+<img width="1510" height="450" alt="Screenshot 2025-12-17 at 18 01 37" src="https://github.com/user-attachments/assets/3af1ceb5-de0b-430a-b45c-4b5891497a33" />
+
+
+
+
 <br/>
 
 ## LLM10:2025 Unbounded Consumption
