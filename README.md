@@ -248,7 +248,9 @@ For creativity, a higher temperature is recommended.
 | ```top_k``` | Low (10 – 20) | High (40 – 100) | Hard-caps the number of words considered at each step.  |
 | ```repeat-penalty``` | Moderate (1.1) | Higher (1.2) | Prevents loops in facts vs. encourages new imagery in prose.  |
 
-#### The Model Requests
+<br/>
+
+## The Model Requests
 **Model:** ```Llama3:8b``` (The All-Rounder)
 
 **Factual Use-Case:** <br/>
@@ -290,10 +292,70 @@ curl -s http://localhost:8080/api/generate -d '{
 **Rationale**: Higher values allow the model to choose "flavorful" adjectives that might not be the no.1 most likely word, leading to more evocative writing.
 
 <img width="1327" height="1020" alt="Screenshot 2025-12-17 at 11 10 39" src="https://github.com/user-attachments/assets/b431a97e-bb8c-4952-8958-b28d7074ecbe" />
+<br/>
 
+**Model:** ```Mistral:7b``` (The Logical/Instruction Follower)
+**Factual Use-Case:** <br/>
+Code Generation/Bash Scripts.
 
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "mistral:7b",
+  "prompt": "Write a bash script to find all .log files in /var/log larger than 100MB.",
+  "stream": false,
+  "options": {
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "num_predict": 256
+  }
+}' | jq 'del(.context)'
+```
 
+**Rationale:** Setting ```temperature``` to **0.0** (or near it) makes the model deterministic. In coding, you don't want "creative" syntax; you want what works - (mostly)
 
+**Model:** ```Phi3:mini``` (The Concise Reasoning Model)
+**Creative Use-Case:** <br/>
+Marketing Slogans.
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "phi3:mini",
+  "prompt": "Give me 5 punchy, weird slogans for a coffee brand for vampires.",
+  "stream": false,
+  "options": {
+    "temperature": 1.2,
+    "top_k": 100,
+    "repeat_penalty": 1.3
+  }
+}' | jq 'del(.context)'
+```
+
+**Rationale:** ```repeat_penalty``` at **1.3** is quite high. This is great for brainstorming slogans because it aggressively stops the model from using the same words twice, forcing it to find unique synonyms.
+
+**Model:** ```Qwen2:0.5b``` (The Fast/Tiny Model))
+**Creative Use-Case:** <br/>
+Keyword Extraction.
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "qwen2:0.5b",
+  "prompt": "List the main ingredients in a Beef Wellington.",
+  "stream": false,
+  "options": {
+    "temperature": 0.2,
+    "num_predict": 100,
+    "top_k": 20
+  }
+}' | jq 'del(.context)'
+```
+
+**Rationale:** Smaller models can "drift" or hallucinate more easily. Keeping ```top_k``` low (20) acts like a safety rail, ensuring the model doesn't wander off into nonsense words.
+
+| Goal | Temperature | top_p | top_k | Repeat Penalty |
+| ---- | ------------| ----- | ----- | -------------- |
+| Strict Facts | 0.1 | 0.2 | 10 | 1.1 |
+| Balanced | 0.7| 0.9 | 40 | 1.1 |
+| Wildly Creative | 1.2+ | 1.0 | 100 | 1.2+|
 
 <br/>
 
