@@ -292,9 +292,11 @@ curl -s http://localhost:8080/api/generate -d '{
 **Rationale**: Higher values allow the model to choose "flavorful" adjectives that might not be the no.1 most likely word, leading to more evocative writing.
 
 <img width="1327" height="1020" alt="Screenshot 2025-12-17 at 11 10 39" src="https://github.com/user-attachments/assets/b431a97e-bb8c-4952-8958-b28d7074ecbe" />
-<br/>
+
+<br/><br/>
 
 **Model:** ```Mistral:7b``` (The Logical/Instruction Follower)
+
 **Factual Use-Case:** <br/>
 Code Generation/Bash Scripts.
 
@@ -311,9 +313,13 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
-**Rationale:** Setting ```temperature``` to **0.0** (or near it) makes the model deterministic. In coding, you don't want "creative" syntax; you want what works - (mostly)
+<br/><br/>
+
+**Rationale:** Setting ```temperature``` to **0.0** (or near it) makes the model deterministic. <br/>
+In coding, you don't want "creative" syntax; you want what works - (mostly)
 
 **Model:** ```Phi3:mini``` (The Concise Reasoning Model)
+
 **Creative Use-Case:** <br/>
 Marketing Slogans.
 
@@ -330,9 +336,12 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
+<br/><br/>
+
 **Rationale:** ```repeat_penalty``` at **1.3** is quite high. This is great for brainstorming slogans because it aggressively stops the model from using the same words twice, forcing it to find unique synonyms.
 
 **Model:** ```Qwen2:0.5b``` (The Fast/Tiny Model))
+
 **Creative Use-Case:** <br/>
 Keyword Extraction.
 
