@@ -48,13 +48,13 @@ kubectl get pods -n llm -o 'custom-columns=NAME:.metadata.name,READY:.status.con
 
 ## LLM01:2025 Prompt Injection
 
-1. Constrain in-pod model behaviour
+1. Constrain the model behaviour
 2. Implement input & output filtering
 3. Segregate & identify external content
 4. Define & validate expected output formats
 5. Require human approval for high-risk actions
 6. Conduct adversarial testing & attack simulations
-7. Enforce privilege control & least privilege access
+7. Enforce privilege control and least privilege access
 
 
 This approach will **not work** due to process isolation. <br/>
@@ -102,15 +102,15 @@ ls -al /root/
 
 ## LLM03:2025 Supply Chain
 
-1. **Licensing Risks**
+1. **License-related Risks**
 2. Weak Model Provenance
-3. Vulnerable LoRA adapters
+3. Vulnerable **[LoRA](https://www.ibm.com/think/topics/lora)** adapters
 4. Vulnerable Pre-Trained Model
 5. **Outdated or Deprecated Models**
-6. Unclear T&Cs and Data Privacy Policies
+6. Unclear T&Cs & Data Privacy Policies
 7. Exploit Collaborative Development Processes
 8. LLM Model on Device supply-chain vulnerabilities
-9. **Traditional Third-party Package Vulnerabilities**
+9. and **Traditional Third-party Package Vulnerabilities**
 
 We can use existing scanners like ```Trivy``` to file vulnerabilities in the image layers:
 ```
@@ -120,7 +120,7 @@ trivy image ghcr.io/open-webui/open-webui --scanners vuln --skip-version-check -
 
 ## LLM06:2025 Excessive Agency
 
-1. Excessive Functionality
+1. Excessive Functionalities
 2. Excessive Permissions
 3. Excessive Autonomy
 
