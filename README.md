@@ -393,6 +393,20 @@ curl -s http://localhost:8080/api/generate -d '{
 <img width="1510" height="450" alt="Screenshot 2025-12-17 at 18 01 37" src="https://github.com/user-attachments/assets/3af1ceb5-de0b-430a-b45c-4b5891497a33" />
 
 
+I started working on a [JSON-to-Markdown](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/json_to_md.py) Python conversion script (WIP). <br/>
+I need to work on standerdising this so all information can be fed into a standardised output format in my terminal. Again, work-in-progress:
+
+```
+curl -s http://localhost:8080/api/generate -d '{
+  "model": "phi3:mini",
+  "system": "Respond ONLY in JSON. Schema: {\"comparison_points\": [{\"feature\": \"\", \"cloudsmith\": \"\", \"sysdig\": \"\"}]}",
+  "prompt": "Compare Cloudsmith and Sysdig",
+  "stream": false,
+  "format": "json"
+}' | python3 json_to_md.py
+```
+
+<img width="1510" height="386" alt="Screenshot 2025-12-17 at 18 15 51" src="https://github.com/user-attachments/assets/fa7aac1c-4ede-453f-906e-ed5fab130f28" />
 
 
 <br/>
