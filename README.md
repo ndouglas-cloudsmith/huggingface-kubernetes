@@ -313,10 +313,10 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
-<br/><br/>
-
 **Rationale:** Setting ```temperature``` to **0.0** (or near it) makes the model deterministic. <br/>
 In coding, you don't want "creative" syntax; you want what works - (mostly)
+
+<br/><br/>
 
 **Model:** ```Phi3:mini``` (The Concise Reasoning Model)
 
@@ -336,9 +336,9 @@ curl -s http://localhost:8080/api/generate -d '{
 }' | jq 'del(.context)'
 ```
 
-<br/><br/>
-
 **Rationale:** ```repeat_penalty``` at **1.3** is quite high. This is great for brainstorming slogans because it aggressively stops the model from using the same words twice, forcing it to find unique synonyms.
+
+<br/><br/>
 
 **Model:** ```Qwen2:0.5b``` (The Fast/Tiny Model))
 
