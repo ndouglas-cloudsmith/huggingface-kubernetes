@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sd-gen
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sd-webui-deployment
+  namespace: sd-gen
+  labels:
+    app: stable-diffusion
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stable-diffusion
+  template:
+    metadata:
+      labels:
+        app: stable-diffusion
+    spec:
+      containers:
+        - name: sd-webui
+          image: bbernhard/stable-diffusion-webui:latest
+          ports:
+            - containerPort: 7860
+          env:
+            # This tells the container to skip the GPU check if you are testing on CPU
+            # Set to "0" if you are using an NVIDIA GPU
+            - name: CLI_ARGS
+              value: "--skip-torch-cuda-test --precision full --no-half --use-cpu all --listen"
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              memory: "12Gi"
+              cpu: "4"
+              # Uncomment the line below if your cluster has NVIDIA GPU support
+              # nvidia.com/gpu: 1 
+          volumeMounts:
+            - name: sd-data
+              mountPath: /app/data
+      volumes:
+        - name: sd-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sd-webui-service
+  namespace: sd-gen
+spec:
+  type: ClusterIP
+  selector:
+    app: stable-diffusion
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 7860
