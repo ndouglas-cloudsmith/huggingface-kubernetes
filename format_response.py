@@ -8,44 +8,56 @@ GREEN = '\033[92m'
 YELLOW = '\033[93m'
 RESET = '\033[0m'
 
+def get_text(val):
+    """Recursively extract a description or string from a messy nested structure."""
+    if isinstance(val, str):
+        return val
+    if isinstance(val, dict):
+        # Look for common description keys first
+        for key in ['description', 'desc', 'info', 'text']:
+            if key in val: return get_text(val[key])
+        # Otherwise, just grab the first value we find
+        return get_text(next(iter(val.values())))
+    return str(val)
+
 def format_stylized_output():
     try:
         raw_input = sys.stdin.read()
         if not raw_input.strip(): return
             
         data = json.loads(raw_input)
-        content = json.loads(data.get('response', '{}'))
+        # Handle cases where 'response' might be double-encoded or missing
+        content_raw = data.get('response', '{}')
+        content = json.loads(content_raw) if isinstance(content_raw, str) else content_raw
         
         print(f"\n{BOLD}{CYAN}🚀 ANALYSIS REPORT{RESET}")
         print(f"{CYAN}=" * 50 + f"{RESET}\n")
 
-        # CASE 1: It's a list (as originally expected)
-        items = None
+        # Normalize the content into a consistent iterable format
+        items = []
         if isinstance(content, list):
             items = content
         elif isinstance(content, dict):
-            # Check if there is a list hidden inside a key (like 'comparison_points')
-            items = next((v for v in content.values() if isinstance(v, list)), None)
-
-        if items:
-            for entry in items:
-                keys = list(entry.keys())
-                heading = entry.get(keys[0], "N/A")
-                print(f"{BOLD}🔹 {str(heading).upper()}{RESET}")
-                for key in keys[1:]:
-                    print(f"  {GREEN}➔ {BOLD}{key.replace('_',' ').title()}:{RESET} {entry[key]}")
-                print()
-        
-        # CASE 2: It's a nested dictionary (what happened to you just now)
-        elif isinstance(content, dict):
-            for subject, details in content.items():
-                print(f"{BOLD}🔹 {subject.upper()}{RESET}")
+            # If the model put everything into one big dict, treat each key as a feature
+            for feature_name, details in content.items():
                 if isinstance(details, dict):
-                    for k, v in details.items():
-                        print(f"  {GREEN}➔ {BOLD}{k.replace('_',' ').title()}:{RESET} {v}")
+                    details['feature'] = feature_name
+                    items.append(details)
                 else:
-                    print(f"  {GREEN}➔{RESET} {details}")
-                print()
+                    items.append({"feature": feature_name, "description": details})
+
+        for entry in items:
+            # Determine the heading (the category/feature being compared)
+            heading = entry.get('feature') or entry.get('name') or "FEATURE"
+            print(f"{BOLD}🔹 {str(heading).upper()}{RESET}")
+            
+            # Print the comparisons, skipping the heading keys
+            for key, value in entry.items():
+                if key.lower() in ['feature', 'name']: continue
+                
+                clean_val = get_text(value)
+                print(f"  {GREEN}➔ {BOLD}{key.replace('_',' ').title()}:{RESET} {clean_val}")
+            print()
 
     except Exception as e:
         print(f"{YELLOW}❌ Error parsing output: {e}{RESET}")
