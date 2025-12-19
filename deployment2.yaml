@@ -9,21 +9,12 @@ metadata:
   name: ollama-startup-script
   namespace: llm
 data:
-  # The startup script for the Ollama server and model pull.
   startup.sh: |
     #!/bin/bash
-    
-    # 1. Start the Ollama server process in the background.
     /usr/bin/ollama serve &
-    
-    # 2. Wait for the server to initialize.
     sleep 5
-    
-    # 3. Pull the required model using the Ollama client utility.
     echo "Starting model pull for qwen2:0.5b..."
     /usr/bin/ollama pull qwen2:0.5b
-    
-    # 4. Keep the container alive by waiting for the background server process.
     wait
 ---
 apiVersion: apps/v1
@@ -42,8 +33,12 @@ spec:
     metadata:
       labels:
         app: llm-ollama
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9110"
     spec:
       containers:
+        # --- OLLAMA SERVER ---
         - name: ollama-server
           image: ollama/ollama:latest
           command: ["/bin/bash", "/app/startup.sh"]
@@ -52,24 +47,6 @@ spec:
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
-            # --- Downward API Metadata ---
-            - name: K8S_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: K8S_POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: K8S_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: K8S_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            # -----------------------------
           resources:
             requests:
               memory: "6Gi"
@@ -82,6 +59,22 @@ spec:
               mountPath: /app
             - name: model-storage
               mountPath: /root/.ollama
+        
+        # --- MONITORING SIDECAR (frcooper) ---
+        - name: exporter
+          image: ghcr.io/frcooper/ollama-exporter:latest
+          args:
+            - "--ollama.uri=http://localhost:11434"
+          ports:
+            - containerPort: 9110
+              name: metrics
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
       volumes:
         - name: script-volume
           configMap:
@@ -151,3 +144,34 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
+---
+# --- SECURITY: NETWORK POLICY ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: llm-security-policy
+  namespace: llm
+spec:
+  podSelector:
+    matchLabels:
+      app: llm-ollama
+  policyTypes:
+  - Ingress
+  ingress:
+  # 1. Allow Open WebUI to reach Ollama API
+  - from:
+    - podSelector:
+        matchLabels:
+          app: open-webui
+    ports:
+    - protocol: TCP
+      port: 11434
+  # 2. Allow Prometheus to reach the sidecar metrics
+  - from:
+    - podSelector:
+        matchLabels:
+          # ADJUST THIS to your Prometheus pod label
+          app.kubernetes.io/name: prometheus 
+    ports:
+    - protocol: TCP
+      port: 9110
