@@ -490,6 +490,11 @@ Alternatively, when you send a prompt via the WebUI, you should see the ```ollam
 kubectl logs -f -n llm -l app=llm-ollama -c ollama-server --timestamps
 ```
 
+Check the ```registry source``` of your LLM model:
+```
+kubectl logs -f -n llm -l app=llm-ollama -c ollama-server --timestamps | grep --color=always "runner.name"
+```
+
 
 ## Troubleshooting
 ```Describe``` pods
