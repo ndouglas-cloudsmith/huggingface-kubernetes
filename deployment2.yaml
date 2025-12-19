@@ -54,6 +54,12 @@ spec:
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
+            # --- VERBOSE LOGGING FIXES START ---
+            - name: OLLAMA_DEBUG
+              value: "1"
+            - name: OLLAMA_KEEP_ALIVE
+              value: "-1"
+            # --- VERBOSE LOGGING FIXES END ---
           resources:
             requests: { memory: "6Gi", cpu: "2" }
             limits: { memory: "8Gi", cpu: "4" }
@@ -230,5 +236,5 @@ spec:
   ingress:
     - from: [{ podSelector: { matchLabels: { app: open-webui } } }]
       ports: [{ protocol: TCP, port: 11434 }]
-    - from: [{ namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: monitoring } } }]
+    - from: [{ namespaceSelector: { matchLabels: { "kubernetes.io/metadata.name": monitoring } } }]
       ports: [{ protocol: TCP, port: 9110 }]
