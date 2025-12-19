@@ -1,8 +1,15 @@
+# 1. NAMESPACES
 apiVersion: v1
 kind: Namespace
 metadata:
   name: llm
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+# 2. OLLAMA CONFIG & DEPLOYMENT
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -36,9 +43,9 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9110"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
-        # --- OLLAMA SERVER ---
         - name: ollama-server
           image: ollama/ollama:latest
           command: ["/bin/bash", "/app/startup.sh"]
@@ -48,38 +55,26 @@ spec:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
           resources:
-            requests:
-              memory: "6Gi"
-              cpu: "2"
-            limits:
-              memory: "8Gi"
-              cpu: "4"
+            requests: { memory: "6Gi", cpu: "2" }
+            limits: { memory: "8Gi", cpu: "4" }
           volumeMounts:
             - name: script-volume
               mountPath: /app
             - name: model-storage
               mountPath: /root/.ollama
-        
-        # --- MONITORING SIDECAR (frcooper) ---
         - name: exporter
-          image: ghcr.io/frcooper/ollama-exporter:latest
-          args:
-            - "--ollama.uri=http://localhost:11434"
+          image: lucabecker42/ollama-exporter:latest
+          env:
+            - name: OLLAMA_URL
+              value: "http://localhost:11434"
+            - name: LISTEN_ADDRESS
+              value: "0.0.0.0:9110"
           ports:
             - containerPort: 9110
               name: metrics
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi
-            requests:
-              cpu: 50m
-              memory: 64Mi
       volumes:
         - name: script-volume
-          configMap:
-            name: ollama-startup-script
-            defaultMode: 0744
+          configMap: { name: ollama-startup-script, defaultMode: 0744 }
         - name: model-storage
           emptyDir: {}
 ---
@@ -89,46 +84,43 @@ metadata:
   name: llm-ollama-service
   namespace: llm
 spec:
-  type: ClusterIP
-  selector:
-    app: llm-ollama
+  selector: { app: llm-ollama }
   ports:
-    - protocol: TCP
+    - name: api
       port: 8080
       targetPort: 11434
+    - name: metrics
+      port: 9110
+      targetPort: 9110
 ---
+# 3. OPEN WEBUI
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: open-webui-deployment
   namespace: llm
-  labels:
-    app: open-webui
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: open-webui
+    matchLabels: { app: open-webui }
   template:
     metadata:
-      labels:
-        app: open-webui
+      labels: { app: open-webui }
     spec:
       containers:
         - name: webui-server
           image: ghcr.io/open-webui/open-webui:main
-          ports:
-            - containerPort: 8080
+          ports: [{ containerPort: 8080 }]
           env:
             - name: OLLAMA_BASE_URL
               value: "http://llm-ollama-service:8080"
             - name: DATA_DIR
               value: "/app/backend/data"
           volumeMounts:
-            - name: webui-data-storage
+            - name: webui-data
               mountPath: /app/backend/data
       volumes:
-        - name: webui-data-storage
+        - name: webui-data
           emptyDir: {}
 ---
 apiVersion: v1
@@ -137,41 +129,106 @@ metadata:
   name: open-webui-service
   namespace: llm
 spec:
-  type: ClusterIP
-  selector:
-    app: open-webui
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
+  selector: { app: open-webui }
+  ports: [{ port: 8080, targetPort: 8080 }]
 ---
-# --- SECURITY: NETWORK POLICY ---
+# 4. MONITORING STACK (PROMETHEUS & GRAFANA)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 10s
+    scrape_configs:
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: prometheus } }
+  template:
+    metadata:
+      labels: { app: prometheus }
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:latest
+          args: ["--config.file=/etc/prometheus/prometheus.yml"]
+          ports: [{ containerPort: 9090 }]
+          volumeMounts: [{ name: config, mountPath: /etc/prometheus }]
+      volumes:
+        - name: config
+          configMap: { name: prometheus-config }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  namespace: monitoring
+spec:
+  selector: { app: prometheus }
+  ports: [{ port: 9090, targetPort: 9090 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: grafana } }
+  template:
+    metadata:
+      labels: { app: grafana }
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports: [{ containerPort: 3000 }]
+          env:
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+            - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+              value: "Admin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  namespace: monitoring
+spec:
+  selector: { app: grafana }
+  ports: [{ port: 3000, targetPort: 3000 }]
+---
+# 5. SECURITY: NETWORK POLICY
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: llm-security-policy
   namespace: llm
 spec:
-  podSelector:
-    matchLabels:
-      app: llm-ollama
-  policyTypes:
-  - Ingress
+  podSelector: { matchLabels: { app: llm-ollama } }
+  policyTypes: [Ingress]
   ingress:
-  # 1. Allow Open WebUI to reach Ollama API
-  - from:
-    - podSelector:
-        matchLabels:
-          app: open-webui
-    ports:
-    - protocol: TCP
-      port: 11434
-  # 2. Allow Prometheus to reach the sidecar metrics
-  - from:
-    - podSelector:
-        matchLabels:
-          # ADJUST THIS to your Prometheus pod label
-          app.kubernetes.io/name: prometheus 
-    ports:
-    - protocol: TCP
-      port: 9110
+    - from: [{ podSelector: { matchLabels: { app: open-webui } } }]
+      ports: [{ protocol: TCP, port: 11434 }]
+    - from: [{ namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: monitoring } } }]
+      ports: [{ protocol: TCP, port: 9110 }]
