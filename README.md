@@ -469,29 +469,25 @@ curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt":
 <br/><br/>
 
 ## Grafana data visualisation
+
+The ```Prometheus``` and ```Grafana``` metrics and visualisation are provided in the ```deployment2.yaml``` manifest <br/>
+These data visualiation tools will exist in their own ```monitoring``` network namespace:
 ```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
-  --namespace monitoring --create-namespace \
-  --set prometheus-node-exporter.hostRootfs=false \
-  --set prometheus-node-exporter.collectors.enable='diskstats,filefd,loadavg,meminfo,netdev,netstat,stat,time,vmstat' \
-  --set prometheus-node-exporter.collectors.disable='netifaces'
+kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment2.yaml
 ```
 
-Check pod status
+```Port-forward``` to access the Grafana dashboard on http://localhost:3001/dashboards
 ```
-kubectl --namespace monitoring get pods
-```
-
-Get Grafana '```admin```' password by running:
-```
-kubectl --namespace monitoring get secrets kube-prom-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+kubectl port-forward -n monitoring svc/grafana-service 3001:3000
 ```
 
-```Port-forward``` to access the Grafana dashboard on ```localhost:4000```
+Alternatively, when you send a prompt via the WebUI, you should see the ```ollama-server``` container log the following in real-time:
+1. ```POST /api/generate``` or ```/api/chat```: This indicates a request has been received.
+2. **Llama.cpp logs**: You will see technical details about the "kv cache" and "context window."
+3. **CUDA/CPU status**: It will show if it's utilising the CPU or a GPU (if configured).
 ```
-kubectl --namespace monitoring port-forward deployment/kube-prom-stack-grafana --address 0.0.0.0 4000:3000
+kubectl logs -f -n llm -l app=llm-ollama -c ollama-server --timestamps
 ```
 
 
