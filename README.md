@@ -189,6 +189,11 @@ Finally, at ```4.4 GB```, the ```mistral:7b```model is the final model we will t
 ollama run mistral:7b
 ```
 
+As always, there's always a smaller model that we can source from Hugging Face (```133 MB```)
+```
+ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
+```
+
 | Model Family | Vendor | Recommended Variant | Model Size | Key Advantages | Typical VRAM/RAM Needs |
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | [Qwen 2](https://ollama.com/library/qwen2:0.5b) | AliBaba | [Qwen 2 0.5B](https://huggingface.co/Qwen/Qwen2-0.5B) | ```352MB``` | If you want to stick with the Qwen family, the 72B model is a massive upgrade and highly competitive with Llama 3 70B. | 40GB+ RAM / 24GB+ VRAM (Quantised). |
