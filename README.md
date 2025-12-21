@@ -444,6 +444,16 @@ curl -s http://localhost:8080/api/generate -d '{
 
 <img width="1510" height="862" alt="Screenshot 2025-12-17 at 18 34 17" src="https://github.com/user-attachments/assets/d47e660b-ce75-49a6-9a80-1d6afef4151d" />
 
+#### WIP: Building out the custom model
+For now we are going to test out ```random``` hosted models.
+
+```
+curl http://localhost:8080/api/generate -d '{
+  "model": "hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M",
+  "prompt": "Who are the first 5 presidents of Ireland?",
+  "stream": false
+}'
+```
 
 <br/>
 
