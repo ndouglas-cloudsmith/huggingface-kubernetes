@@ -140,6 +140,20 @@ Don't worry: You can ```reinstall``` this small model quite easily with the belo
 ollama run qwen2:0.5b
 ```
 
+Likewise, you'll see a lot of people recommend similar model names from [bartowski](https://huggingface.co/bartowski) - a Research Engineer at arcee.ai. <br/>
+Bartowski's models often improve on the original, non-optimised models in their **Quantisation Quality**
+```
+ollama run hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
+```
+
+You can test out performance difference and overall efficacy between this seemingly indentical models and quantisations:
+```
+ollama run hf.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
+```
+
+<img width="1242" height="774" alt="Screenshot 2025-12-21 at 10 53 47" src="https://github.com/user-attachments/assets/109ff7ec-7375-4b6f-8c60-216f723d10e5" />
+
+
 ```Llama 3:8B``` Instruct: This is currently the industry leader for models sub-```10 Billion``` parameters, offering the best combination of speed, reasoning, and efficiency. <br/>
 It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, often too big for small demos.
 ```
