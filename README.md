@@ -146,6 +146,12 @@ It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, o
 ollama run llama3:8b
 ```
 
+There are much smaller community-built models in some cases. 
+This example from the Hugging Face repository ```bartowski``` was only ```807 MB``` and was high-performant out-of-the-box.
+```
+ollama run hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
+```
+
 Don't install this example on your homelab. <br/>
 It's way too **BIG** for a homelab - ```79GB```
 ```
