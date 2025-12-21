@@ -158,6 +158,20 @@ At ```2.2 GB```, I found this model really useful for general knowledge/trivia:
 ollama run phi3:mini
 ```
 
+You don't need to manually download files anymore. <br/>
+You can use the ```hf.co prefix``` followed by the Hugging Face repository name:
+```
+ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf
+```
+
+If a repository has multiple "[quants](https://huggingface.co/hugging-quants)" (different file sizes/quality levels), you can specify which one you want by adding a **tag**. <br/>
+If you don't specify, say, an **8-bit quantization**, Ollama will try to pick a sensible default (usually ```Q4_K_M```).
+
+```
+ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf:Q8_0
+```
+
+
 Alternatively, at ```3.8 GB```, the ```codellama:7b```model is also pretty useful.
 
 ```
