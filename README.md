@@ -106,6 +106,20 @@ cd /root/.ollama/models
 ls -R
 ```
 
+This will copy the entire blobs directory to your current folder
+```
+POD_NAME=$(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}')
+kubectl cp -n llm $POD_NAME:/root/.ollama/models/blobs ./ollama_blobs_backup
+```
+
+You'll need to install ```picklescan``` to understand **Pickle Deserialisation Exploits**
+```
+brew install picklescan
+or
+pip install picklescan
+```
+
+
 ## LLM03:2025 Supply Chain
 
 1. **License-related Risks**
