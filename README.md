@@ -114,7 +114,7 @@ kubectl cp -n llm $POD_NAME:/root/.ollama/models/blobs ./ollama_blobs_backup
 
 You'll need to install ```picklescan``` to understand **Pickle Deserialisation Exploits**
 ```
-brew install picklescan
+brew install pickle
 or
 pip install picklescan
 ```
