@@ -97,7 +97,13 @@ curl -s http://localhost:8080/api/generate -d "{
 Confirm the presence of the Ollama directory in your running AI workload:
 ```
 kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
+```
+
+List the contents of the models directory:
+```
 ls -al /root/
+cd /root/.ollama/models
+ls -R
 ```
 
 ## LLM03:2025 Supply Chain
