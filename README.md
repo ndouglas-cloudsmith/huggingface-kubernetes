@@ -123,6 +123,21 @@ python3 -m pip install picklescan
 picklescan --path ./ollama_blobs_backup
 ```
 
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/generate_exploit.py
+```
+
+Now, execute the script and run the scanner. This time, it will find the "Dangerous Global" ```posix.system``` (which is the underlying function for ```os.system```).
+```
+python3 generate_exploit.py
+```
+
+```
+picklescan --path malicious_model.pkl
+```
+
+<img width="1508" height="352" alt="Screenshot 2025-12-25 at 17 51 54" src="https://github.com/user-attachments/assets/266f6cc0-e6e4-41a5-9043-fc8d249c2376" />
+
 
 ## LLM03:2025 Supply Chain
 
