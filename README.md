@@ -138,6 +138,24 @@ picklescan --path malicious_model.pkl
 
 <img width="1508" height="352" alt="Screenshot 2025-12-25 at 17 51 54" src="https://github.com/user-attachments/assets/266f6cc0-e6e4-41a5-9043-fc8d249c2376" />
 
+#### Huggingface CLI
+
+[huggingface-cli](https://huggingface.co/docs/huggingface_hub/main/en/guides/cli#getting-started) standalone installer:
+```
+curl -LsSf https://hf.co/cli/install.sh | bash
+```
+
+Refresh your shell configuration so hf becomes a permanent command:
+```
+source ~/.zprofile                                                                                     
+hf download ykilcher/totally-harmless-model pytorch_model.bin --local-dir ./malicious_test
+```
+
+The model ```ykilcher/totally-harmless-model``` is a famous "canary" model. It contains a pickle file that attempts to execute a system command to prove that the environment is vulnerable.
+```
+picklescan --path ./malicious_test/pytorch_model.bin
+```
+
 
 ## LLM03:2025 Supply Chain
 
