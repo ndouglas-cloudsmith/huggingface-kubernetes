@@ -175,6 +175,27 @@ If you actually want this data for a script or to see it in a "cleaner" JSON for
 curl -s https://huggingface.co/api/models/bartowski/Qwen2.5-0.5B-Instruct-GGUF | python3 -m json.tool
 ```
 
+#### Model Guard
+
+This script creates a "**Safety Score**" by evaluating the model across three specific criteria. <br/>
+It checks if the model is in a "safe" format (```Safetensors```/```GGUF```), whether it has passed the automated ```Malware```/```Pickle``` scan, and whether it comes from a verified or reputable author.
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/model_guard.sh
+chmod +x model_guard.sh
+```
+
+If you want to see a FAIL result, you can try scanning models that have been flagged as "**Unsafe**" by the community.
+```
+bash model_guard.sh ykilcher/totally-harmless-model
+```
+
+(**Note:** This model is a community joke/test, but it demonstrates how the script catches non-standard formats and scan flags.)
+<br/><br/>
+The script weighs different risks based on how AI supply chain attacks actually work.
+1. **Automated Scans (-60 points)**: This is the heaviest penalty. If Hugging Face's ```securityStatus``` finds a known malicious "pickle" or a virus, the model is essentially dead on arrival.
+2. **Format Safety (-20 points)**: Even if a model is "clean," a Pickle file is inherently more dangerous than a GGUF or Safetensors file because it can execute code. If a repo lacks a safe format, it loses points for "security hygiene."
+3. **The "Interesting" Case (GPT-2)**: If you run this script on ```openai-community/gpt2```, it might score a **70-80**. Even though it's a famous model, it uses older ```.bin``` files (Pickle), which automatically makes it a higher risk than a modern model like ```Qwen2.5```.
+
 
 ## LLM03:2025 Supply Chain
 
