@@ -184,17 +184,28 @@ wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernete
 chmod +x model_guard.sh
 ```
 
-If you want to see a FAIL result, you can try scanning models that have been flagged as "**Unsafe**" by the community.
+If you want to see a **FAIL** result, you can try scanning models that have been flagged as "**Unsafe**" by the community.
 ```
 bash model_guard.sh ykilcher/totally-harmless-model
 ```
 
 (**Note:** This model is a community joke/test, but it demonstrates how the script catches non-standard formats and scan flags.)
 <br/><br/>
+
 The script weighs different risks based on how AI supply chain attacks actually work.
 1. **Automated Scans (-60 points)**: This is the heaviest penalty. If Hugging Face's ```securityStatus``` finds a known malicious "pickle" or a virus, the model is essentially dead on arrival.
 2. **Format Safety (-20 points)**: Even if a model is "clean," a Pickle file is inherently more dangerous than a GGUF or Safetensors file because it can execute code. If a repo lacks a safe format, it loses points for "security hygiene."
 3. **The "Interesting" Case (GPT-2)**: If you run this script on ```openai-community/gpt2```, it might score a **70-80**. Even though it's a famous model, it uses older ```.bin``` files (Pickle), which automatically makes it a higher risk than a modern model like ```Qwen2.5```.
+<br/><br/>
+
+You can run this script for "Safe" and "Unsafe" against a long time of public models. <br/>
+You should see ```google/gemma-2-2b-it``` pass with a **100/100**, while others might settle at an **80/100** or fail if they are in risky formats.
+```
+bash model_guard.sh stabilityai/stable-diffusion-2-1 google/gemma-2-2b-it bartowski/Qwen2.5-0.5B-Instruct-GGUF ykilcher/totally-harmless-model
+```
+
+<img width="1315" height="542" alt="Screenshot 2025-12-26 at 15 37 22" src="https://github.com/user-attachments/assets/2ef9fd45-2410-45aa-a3c8-38518782650b" />
+
 
 
 ## LLM03:2025 Supply Chain
