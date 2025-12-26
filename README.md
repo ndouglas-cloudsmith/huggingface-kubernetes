@@ -162,6 +162,19 @@ This section cover Software Bill of Materials (```SBOM```) for AI models (AKA: `
 curl -L https://huggingface.co/ykilcher/totally-harmless-model/raw/main/README.md
 ```
 
+In Hugging Face terminology, the **Model Card** is the ```README.md``` file. <br/>
+There isn't a separate "Model Card" file; rather, the ```README``` file is rendered by the website as the Model Card:
+
+```
+curl -sL https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+If you actually want this data for a script or to see it in a "cleaner" JSON format without parsing Markdown, you can use the Hugging Face API instead of downloading the raw file:
+
+```
+curl -s https://huggingface.co/api/models/bartowski/Qwen2.5-0.5B-Instruct-GGUF | python3 -m json.tool
+```
+
 
 ## LLM03:2025 Supply Chain
 
