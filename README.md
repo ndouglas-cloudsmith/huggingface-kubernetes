@@ -156,6 +156,12 @@ The model ```ykilcher/totally-harmless-model``` is a famous "canary" model. It c
 picklescan --path ./malicious_test/pytorch_model.bin
 ```
 
+#### Understanding Model Cards 
+This section cover Software Bill of Materials (```SBOM```) for AI models (AKA: ```MBOMs```)
+```
+curl -L https://huggingface.co/ykilcher/totally-harmless-model/raw/main/README.md
+```
+
 
 ## LLM03:2025 Supply Chain
 
