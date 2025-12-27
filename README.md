@@ -220,7 +220,24 @@ bash model_guard.sh stabilityai/stable-diffusion-2-1 google/gemma-2-2b-it bartow
 8. LLM Model on Device supply-chain vulnerabilities
 9. and **Traditional Third-party Package Vulnerabilities**
 
-We can use existing scanners like ```Trivy``` to file vulnerabilities in the image layers:
+
+[Repository Licensing](https://huggingface.co/docs/hub/en/repositories-licenses) is a complex topic in HuggingFace. <br/>
+AI development often involves diverse software and dataset licenses, creating risks if not properly managed.
+```
+curl -sL https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+curl -sL https://huggingface.co/coqui/XTTS-v1/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+Different open-source and proprietary licenses impose varying legal requirements. <br/>
+Dataset licenses may restrict usage, distribution, or commercialisation.
+
+```
+curl -sL https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+curl -sL https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+curl -sL https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+We can use existing scanners like ```Trivy``` to scan for vulnerabilities in the Ollama runtime image layers:
 ```
 trivy image ollama/ollama --scanners vuln --skip-version-check
 trivy image ghcr.io/open-webui/open-webui --scanners vuln --skip-version-check --severity CRITICAL
