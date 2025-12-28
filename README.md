@@ -212,7 +212,7 @@ bash model_guard.sh stabilityai/stable-diffusion-2-1 google/gemma-2-2b-it bartow
 
 1. **License-related Risks**
 2. Weak Model Provenance
-3. Vulnerable **[LoRA](https://www.ibm.com/think/topics/lora)** adapters
+3. Vulnerable **[LoRA](https://www.ibm.com/think/topics/lora)** Adapters
 4. Vulnerable Pre-Trained Model
 5. **Outdated or Deprecated Models**
 6. Unclear T&Cs & Data Privacy Policies
@@ -236,7 +236,7 @@ Dataset licenses may restrict usage, distribution, or commercialisation.
 | License Type | Model | Primary Restriction |
 | ---- | ---- | ---- |
 | [Apache 2.0](https://huggingface.co/models?license=license:apache-2.0) | [Qwen 2.5](https://huggingface.co/Qwen/Qwen2.5-0.5B/blob/main/LICENSE), Mistral 7B | **None** (Permissive) |
-| Coqui Public Model License (CPML) | [Coqui XTTS](https://huggingface.co/coqui/XTTS-v2/blob/main/LICENSE.txt) | No Commercial Use |
+| [Coqui Public Model License](https://huggingface.co/coqui/XTTS-v2/blob/main/LICENSE.txt) (CPML) | Coqui XTTS | No Commercial Use |
 | [Llama Community](https://huggingface.co/meta-llama/Llama-3.2-1B/blob/main/LICENSE.txt) | Llama 3.1 / 3.2 | User-cap (700M+) & Competitive training ban |
 | [OpenRAIL](https://huggingface.co/blog/open_rail) | Stable Diffusion | Behavioural and Ethical use mandates |
 | [CC BY-NC-SA](https://huggingface.co/datasets?license=license%3Acc-by-nc-sa-3.0) | Various Datasets | Non-commercial + "Share Alike" ([Copyleft](https://en.wikipedia.org/wiki/Copyleft)) |
