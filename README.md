@@ -235,11 +235,14 @@ Dataset licenses may restrict usage, distribution, or commercialisation.
 
 | License Type | Model | Primary Restriction |
 | ---- | ---- | ---- |
-| Apache 2.0 | Qwen 2.5, Mistral 7B | **None** (Permissive) |
-| CPML | Coqui XTTS | No Commercial Use |
-| Llama Community | Llama 3.1 / 3.2 | User-cap (700M+) & Competitive training ban |
-| OpenRAIL | Stable Diffusion | Behavioural and Ethical use mandates |
-| CC BY-NC-SA | Various Datasets | Non-commercial + "Share Alike" (Copyleft) |
+| [Apache 2.0](https://huggingface.co/models?license=license:apache-2.0) | [Qwen 2.5](https://huggingface.co/Qwen/Qwen2.5-0.5B/blob/main/LICENSE), Mistral 7B | **None** (Permissive) |
+| Coqui Public Model License (CPML) | [Coqui XTTS](https://huggingface.co/coqui/XTTS-v2/blob/main/LICENSE.txt) | No Commercial Use |
+| [Llama Community](https://huggingface.co/meta-llama/Llama-3.2-1B/blob/main/LICENSE.txt) | Llama 3.1 / 3.2 | User-cap (700M+) & Competitive training ban |
+| [OpenRAIL](https://huggingface.co/blog/open_rail) | Stable Diffusion | Behavioural and Ethical use mandates |
+| [CC BY-NC-SA](https://huggingface.co/datasets?license=license%3Acc-by-nc-sa-3.0) | Various Datasets | Non-commercial + "Share Alike" ([Copyleft](https://en.wikipedia.org/wiki/Copyleft)) |
+
+
+**Examples of Risky Licenses**
 
 1. **Meta Llama 3.1 (Llama 3.1 Community License)**
 This is a prime example of an "Open Weights" license that includes a user-cap restriction (700M+ monthly users) and prohibits using outputs to train competing models.
@@ -248,7 +251,7 @@ curl -sL https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/raw/main/README
 ```
 
 2. **Mistral Small (Mistral Research License)**
-While the original Mistral 7B was Apache 2.0, many of their newer, optimised models like "Small" or "Large" use a proprietary Mistral Research License which limits commercial deployment.
+While the original [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1) was Apache 2.0, many of their newer, optimised models like "Small" or "Large" use a proprietary Mistral Research License which limits commercial deployment.
 ```
 curl -sL https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
 ```
