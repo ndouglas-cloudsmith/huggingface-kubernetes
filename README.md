@@ -231,11 +231,57 @@ curl -sL https://huggingface.co/coqui/XTTS-v1/raw/main/README.md | awk '/---/{co
 Different open-source and proprietary licenses impose varying legal requirements. <br/>
 Dataset licenses may restrict usage, distribution, or commercialisation.
 
+**Summary of Common License Restrictions**
+
+| License Type | Model | Primary Restriction |
+| ---- | ---- | ---- |
+| Apache 2.0 | Qwen 2.5, Mistral 7B | **None** (Permissive) |
+| CPML | Coqui XTTS | No Commercial Use |
+| Llama Community | Llama 3.1 / 3.2 | User-cap (700M+) & Competitive training ban |
+| OpenRAIL | Stable Diffusion | Behavioural and Ethical use mandates |
+| CC BY-NC-SA | Various Datasets | Non-commercial + "Share Alike" (Copyleft) |
+
+1. **Meta Llama 3.1 (Llama 3.1 Community License)**
+This is a prime example of an "Open Weights" license that includes a user-cap restriction (700M+ monthly users) and prohibits using outputs to train competing models.
+```
+curl -sL https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+2. **Mistral Small (Mistral Research License)**
+While the original Mistral 7B was Apache 2.0, many of their newer, optimised models like "Small" or "Large" use a proprietary Mistral Research License which limits commercial deployment.
 ```
 curl -sL https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+3. **Stable Diffusion XL (OpenRAIL++ License)**
+This model uses the OpenRAIL-M license.
+It is technically permissive for commercial use but legally binds you to "Responsible AI" usage terms (eg: no medical/legal advice, no deceptive content).
+```
 curl -sL https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+4. **Google Gemma 2 (Gemma Terms of Use)**
+Google uses a custom license for Gemma. Like Llama, it is not Open Source (OSI-approved) but is "Open Weights."
+It includes specific redistribution requirements and usage restrictions.
+
+```
+curl -sL https://huggingface.co/google/gemma-2-9b/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
+```
+
+5. **Microsoft Phi-3 (MIT License)**
+For comparison, this query shows a truly Open Source model.
+The MIT license is one of the most permissive, allowing for commercial use, modification, and private use with almost no strings attached.
+
+```
 curl -sL https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/raw/main/README.md | awk '/---/{count++; if(count<=2) print; next} count<2'
 ```
+
+**Understanding the Metadata**
+When you run these commands, keep an eye on these specific fields in the output:
+- **license**: Often a short-code (eg: ```cc-by-nc-4.0```, ```other```, ```mit```).
+- **license_name**: Provides the specific branding for non-standard licenses (eg: ```llama3.1```).
+- **license_link**: If this exists, it usually points to the legal "fine print" which defines whether you can actually make money from the model.
+
 
 We can use existing scanners like ```Trivy``` to scan for vulnerabilities in the Ollama runtime image layers:
 ```
