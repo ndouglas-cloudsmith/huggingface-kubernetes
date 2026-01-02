@@ -145,7 +145,7 @@ picklescan --path malicious_model.pkl
 curl -LsSf https://hf.co/cli/install.sh | bash
 ```
 
-Refresh your shell configuration so hf becomes a permanent command:
+Refresh your shell configuration so ```hf``` becomes a permanent command:
 ```
 source ~/.zprofile                                                                                     
 hf download ykilcher/totally-harmless-model pytorch_model.bin --local-dir ./malicious_test
@@ -154,6 +154,12 @@ hf download ykilcher/totally-harmless-model pytorch_model.bin --local-dir ./mali
 The model ```ykilcher/totally-harmless-model``` is a famous "canary" model. It contains a pickle file that attempts to execute a system command to prove that the environment is vulnerable.
 ```
 picklescan --path ./malicious_test/pytorch_model.bin
+```
+
+Note: If you're on ```Ubuntu``` on a Raspberry Pi, you're almsot certainly using ```bash```:
+```
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 #### Understanding Model Cards 
