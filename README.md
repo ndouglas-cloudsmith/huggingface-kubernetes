@@ -397,7 +397,7 @@ ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 | [CodeLlama](https://ollama.com/library/codellama) | Meta | [CodeLlama 7B Instruct](https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf) | ```3.8GB``` | **Coding Specialist**. Fine-tuned specifically for programming. Supports 50+ languages and "Fill-in-the-middle" completion. Great for local IDE integration. | 8GB+ RAM / 6GB+ VRAM (Quantised) |
 | [Mistral](https://ollama.com/library/mistral) | Mistral AI | [Mistral 7B v0.3](https://huggingface.co/mistralai/Mistral-7B-v0.3) | ```4.4GB``` | **The All-Rounder**. Known for the best balance of speed and high-quality "human-like" responses. The v0.3 variant adds native function calling. | 8GB+ RAM / 8GB+ VRAM (Quantised) |
 
-| Model Size | Run Cmd | File Size (approx.) | Recommended RAM/VRAM |
+| Model Size | Run Cmd | File Size | RAM/VRAM |
 | ---- | ---- | ---- | ---- |
 | **Qwen2.5:1.5b** | ```ollama run qwen2.5:1.5b``` | ~986 MB | 4GB |
 | **Qwen2.5:3b** | ```ollama run qwen2.5:3b``` | ~1.9 GB | 8GB |
