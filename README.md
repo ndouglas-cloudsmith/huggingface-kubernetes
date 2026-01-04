@@ -397,7 +397,7 @@ ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 | [CodeLlama](https://ollama.com/library/codellama) | Meta | [CodeLlama 7B Instruct](https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf) | ```3.8GB``` | **Coding Specialist**. Fine-tuned specifically for programming. Supports 50+ languages and "Fill-in-the-middle" completion. Great for local IDE integration. | 8GB+ RAM / 6GB+ VRAM (Quantised) |
 | [Mistral](https://ollama.com/library/mistral) | Mistral AI | [Mistral 7B v0.3](https://huggingface.co/mistralai/Mistral-7B-v0.3) | ```4.4GB``` | **The All-Rounder**. Known for the best balance of speed and high-quality "human-like" responses. The v0.3 variant adds native function calling. | 8GB+ RAM / 8GB+ VRAM (Quantised) |
 
-| Model Size | Run Cmd | File Size | RAM |
+| Model Size | Run Command | File Size | RAM |
 | ---- | ---- | ---- | ---- |
 | **Qwen2.5:1.5b** | ```ollama run qwen2.5:1.5b``` | ~986 MB | 4GB |
 | **Qwen2.5:3b** | ```ollama run qwen2.5:3b``` | ~1.9 GB | 8GB |
@@ -420,6 +420,16 @@ ollama show nigelGPT
 
 <img width="892" height="612" alt="Screenshot 2026-01-04 at 00 38 12" src="https://github.com/user-attachments/assets/609dff88-86a7-45ba-9d28-20db938ccb9f" />
 
+Alternatively, you can show the entire ```modelfile``` associated with the LLM model
+```
+ollama show --modelfile nigelGPT
+```
+
+| Command | What it tells you |
+| ---- | ---- |
+| ```ollama show nigelGPT``` | Family, Parameters, and License info. |
+| ```ollama show --modelfile nigelGPT``` | The "Source" model and any custom System Prompts. |
+| ```ollama list``` | Compare the **ID** hash to other known models. |
 
 <br/><br/>
 
