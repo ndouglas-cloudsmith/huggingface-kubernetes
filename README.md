@@ -399,8 +399,8 @@ ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 
 | Model Size | Run Cmd | File Size (approx.) | Recommended RAM/VRAM |
 | ---- | ---- | ---- | ---- |
-| Qwen2.5:1.5b | ollama run qwen2.5:1.5b | ~986 MB | 4GB |
-| Qwen2.5:3b | ollama run qwen2.5:3b | ~1.9 GB | 8GB |
+| **Qwen2.5:1.5b** | ```ollama run qwen2.5:1.5b``` | ~986 MB | 4GB |
+| **Qwen2.5:3b** | ```ollama run qwen2.5:3b``` | ~1.9 GB | 8GB |
 
 <br/><br/>
 
