@@ -397,17 +397,29 @@ ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 | [CodeLlama](https://ollama.com/library/codellama) | Meta | [CodeLlama 7B Instruct](https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf) | ```3.8GB``` | **Coding Specialist**. Fine-tuned specifically for programming. Supports 50+ languages and "Fill-in-the-middle" completion. Great for local IDE integration. | 8GB+ RAM / 6GB+ VRAM (Quantised) |
 | [Mistral](https://ollama.com/library/mistral) | Mistral AI | [Mistral 7B v0.3](https://huggingface.co/mistralai/Mistral-7B-v0.3) | ```4.4GB``` | **The All-Rounder**. Known for the best balance of speed and high-quality "human-like" responses. The v0.3 variant adds native function calling. | 8GB+ RAM / 8GB+ VRAM (Quantised) |
 
-| Model Size | Run Cmd | File Size | RAM/VRAM |
+| Model Size | Run Cmd | File Size | RAM |
 | ---- | ---- | ---- | ---- |
 | **Qwen2.5:1.5b** | ```ollama run qwen2.5:1.5b``` | ~986 MB | 4GB |
 | **Qwen2.5:3b** | ```ollama run qwen2.5:3b``` | ~1.9 GB | 8GB |
 
-<br/><br/>
 
 Type the below command to ```leave``` the AI chat:
 ```
 /bye
 ```
+
+Renaming models:
+```
+ollama cp qwen2.5:1.5b nigelGPT
+```
+
+However, you can always find out what the underlying model is for ```nigelGPT``` via the ```ollama show``` command:
+```
+ollama show nigelGPT
+```
+
+<img width="892" height="612" alt="Screenshot 2026-01-04 at 00 38 12" src="https://github.com/user-attachments/assets/609dff88-86a7-45ba-9d28-20db938ccb9f" />
+
 
 <br/><br/>
 
