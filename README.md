@@ -452,6 +452,7 @@ That way, you get a single source of truth, malware scanning, and you own the
 availability of your assets. Shall we set up a connector instead?"
 EOF
 ollama create nigelGPT -f NigelCloudsmith
+ollama run nigelGPT
 ```
 
 However, you can always find out what the underlying model is for ```nigelGPT``` via the ```ollama show``` command:
