@@ -375,7 +375,10 @@ ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf:Q8_0
 Alternatively, at ```3.8 GB```, the ```codellama:7b```model is also pretty useful.
 
 ```
-ollama run codellama:7b
+ollama rm nigelGPT:latest
+ollama pull codellama:7b
+ollama cp codellama:7b nigelGPT
+ollama run nigelGPT
 ```
 
 Finally, at ```4.4 GB```, the ```mistral:7b```model is the final model we will test in this lab:
@@ -387,6 +390,7 @@ As always, there's always a smaller model that we can source from Hugging Face (
 ```
 ollama pull hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 ollama cp hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M nigelGPT
+ollama run nigelGPT
 ```
 
 | Model Family | Vendor | Recommended Variant | Model Size | Key Advantages | Typical VRAM/RAM Needs |
