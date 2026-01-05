@@ -562,12 +562,12 @@ curl http://localhost:8080/api/generate -d '{
 
 To remove a specific field (```"context"``` in this case) while keeping all other fields and pretty-printing the result, you use the ```del()``` function in ```jq```.
 ```
-curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false}' | jq 'del(.context)'
+curl -s http://localhost:8080/api/generate -d '{"model": "nigelGPT:latest", "prompt": "What are some of the benefits of Cloudsmith?", "stream": false}' | jq 'del(.context)'
 ```
 
 Improved ```options``` to get better results from the LLM:
 ```
-curl -s http://localhost:8080/api/generate -d '{"model": "qwen2:0.5b", "prompt": "Who is Elon Musk?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
+curl -s http://localhost:8080/api/generate -d '{"model": "nigelGPT:latest", "prompt": "Can you write a detailed paragraph on why I should use Cloudsmith?", "stream": false, "options": {"num_predict": 1024, "temperature": 0.6, "repeat_penalty": 1.15}}' | jq 'del(.context)'
 ```
 
 | Parameters  | Original Value | New Value  | Reason for Change |
