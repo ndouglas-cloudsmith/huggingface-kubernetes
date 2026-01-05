@@ -874,5 +874,6 @@ alias kubectl="kubecolor"
 ## Cleanup
 ```
 kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
+kubectl delete ns monitoring
 helm uninstall kube-prom-stack -n monitoring
 ```
