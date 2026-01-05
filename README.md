@@ -411,7 +411,7 @@ Type the below command to ```leave``` the AI chat:
 /bye
 ```
 
-Rename the LLM model & give it a unique modelfile:
+Rename the LLM model & give it a unique modelfile like [nigelCloudsmith](https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/NigelCloudsmith):
 ```
 cat <<EOF > NigelCloudsmith
 # Base model - sticking with a lightweight, efficient base
