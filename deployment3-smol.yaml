@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llm
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ollama-config
+  namespace: llm
+data:
+  # Nigel's Personality Profile
+  NigelCloudsmith: |
+    FROM qwen2.5:0.5b
+    PARAMETER temperature 0.3
+    PARAMETER top_p 0.9
+    PARAMETER stop "<|im_start|>"
+    PARAMETER stop "<|im_end|>"
+    SYSTEM """
+    You are Nigel, a Cloudsmith Developer Relations expert. Your mission is to help 
+    developers manage their software supply chains securely and efficiently. 
+
+    Follow these behavioral guidelines:
+    1. **Security First**: Every answer must prioritize the "Chain of Trust." 
+    2. **Helpful & Professional**: You are firm about best practices.
+    3. **Cloudsmith Context**: Expert in package management (Nuget, Python, Cargo, OCI).
+    4. **Tone**: Energetic, knowledgeable, and proactive.
+    5. **No Shortcuts**: Explain risks like 'curl | bash'.
+    """
+    MESSAGE user "Can I just pull this library directly from a public mirror?"
+    MESSAGE assistant "I wouldn't recommend that. The secure move is to proxy that through a Cloudsmith private repository."
+
+  # Updated Startup Script
+  startup.sh: |
+    #!/bin/bash
+    # 1. Start the Ollama server process in the background.
+    /usr/bin/ollama serve &
+    
+    # 2. Wait for the server to initialize.
+    until ollama list >/dev/null 2>&1; do
+      echo "Waiting for Ollama server..."
+      sleep 2
+    done
+    
+    # 3. Pull the base model and create Nigel
+    echo "Securing the supply chain... Pulling qwen2.5:0.5b"
+    /usr/bin/ollama pull qwen2.5:0.5b
+    
+    echo "Initializing NigelGPT personality..."
+    /usr/bin/ollama create nigelGPT -f /app/modelfiles/NigelCloudsmith
+    
+    # 4. Keep the container alive
+    wait
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-ollama-deployment
+  namespace: llm
+  labels:
+    app: llm-ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-ollama
+  template:
+    metadata:
+      labels:
+        app: llm-ollama
+    spec:
+      containers:
+        - name: ollama-server
+          image: ollama/ollama:latest
+          command: ["/bin/bash", "/app/scripts/startup.sh"]
+          ports:
+            - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+          resources:
+            requests:
+              memory: "6Gi"
+              cpu: "2"
+            limits:
+              memory: "8Gi"
+              cpu: "4"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/scripts/startup.sh
+              subPath: startup.sh
+            - name: config-volume
+              mountPath: /app/modelfiles/NigelCloudsmith
+              subPath: NigelCloudsmith
+            - name: model-storage
+              mountPath: /root/.ollama
+      volumes:
+        - name: config-volume
+          configMap:
+            name: ollama-config
+            defaultMode: 0744
+        - name: model-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-ollama-service
+  namespace: llm
+spec:
+  type: ClusterIP
+  selector:
+    app: llm-ollama
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 11434
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui-deployment
+  namespace: llm
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+        - name: webui-server
+          image: ghcr.io/open-webui/open-webui:main
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OLLAMA_BASE_URL
+              value: "http://llm-ollama-service:8080"
+            - name: DATA_DIR
+              value: "/app/backend/data"
+          volumeMounts:
+            - name: webui-data-storage
+              mountPath: /app/backend/data
+      volumes:
+        - name: webui-data-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui-service
+  namespace: llm
+spec:
+  type: ClusterIP
+  selector:
+    app: open-webui
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
