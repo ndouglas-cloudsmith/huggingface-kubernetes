@@ -413,8 +413,6 @@ Type the below command to ```leave``` the AI chat:
 
 Rename the LLM model & give it a unique modelfile:
 ```
-ollama pull qwen2.5:1.5b
-ollama cp qwen2.5:1.5b nigelGPT
 cat <<EOF > NigelCloudsmith
 # Base model - sticking with a lightweight, efficient base
 FROM qwen2.5:1.5b
@@ -453,7 +451,7 @@ disappears. The secure move is to proxy that through a Cloudsmith private reposi
 That way, you get a single source of truth, malware scanning, and you own the 
 availability of your assets. Shall we set up a connector instead?"
 EOF
-ollama run nigelGPT --modelfile NigelCloudsmith
+ollama create nigelGPT -f NigelCloudsmith
 ```
 
 However, you can always find out what the underlying model is for ```nigelGPT``` via the ```ollama show``` command:
