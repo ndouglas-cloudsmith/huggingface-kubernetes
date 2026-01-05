@@ -340,7 +340,7 @@ It is readily available on Ollama and Docker Hub - but comes in a ```4.7GB```, o
 ollama run llama3:8b
 ```
 
-There are much smaller community-built models in some cases. 
+There are much smaller community-built models in some cases. <br/>
 This example from the Hugging Face repository ```bartowski``` was only ```807 MB``` and was high-performant out-of-the-box.
 ```
 ollama run hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
@@ -385,7 +385,8 @@ ollama run mistral:7b
 
 As always, there's always a smaller model that we can source from Hugging Face (```133 MB```)
 ```
-ollama run hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
+ollama pull hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
+ollama cp hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M nigelGPT
 ```
 
 | Model Family | Vendor | Recommended Variant | Model Size | Key Advantages | Typical VRAM/RAM Needs |
