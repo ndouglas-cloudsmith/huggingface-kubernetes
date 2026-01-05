@@ -17,6 +17,11 @@ It could take a minute or two for the LLM model to installed within the running 
 kubectl logs -f -n llm deployment/llm-ollama-deployment
 ```
 
+Alternatively, see if the ```pull``` process is actually active:
+```
+ps aux | grep ollama
+```
+
 You should see your image locally:
 ```
 docker images | awk '
