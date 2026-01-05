@@ -440,10 +440,19 @@ ollama show --modelfile nigelGPT
 3. Revealing of Filtering Criteria
 4. Disclosure of Permissions and User Roles
 
-#### Interact with the AI
+#### Set controls through Modelfiles
+
+Download the **HAL9000** ```modelfile```
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/HAL9000
+```
+
+You can then create your custom LLM via the new ```HAL9000``` file:
+```
+ollama create hal9000 -f HAL9000
+```
 
 Run the ollama pull command for ```Qwen2:0.5B``` (```300 MB``` - ```0.5 Parameters```:
-
 ```
 kubectl exec -it -n llm --selector=app=llm-ollama -- ollama pull qwen2:0.5b
 ```
