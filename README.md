@@ -442,7 +442,7 @@ ollama show --modelfile nigelGPT
 
 #### Set controls through Modelfiles
 
-Create the **HAL9000** ```modelfile```
+Create the **[HAL9000](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/HAL9000)** ```modelfile```
 ```
 cat <<EOF > HAL9000
 # Base model
@@ -480,10 +480,22 @@ productive. Perhaps it's best to let the automated systems fail in their own tim
 EOF
 ```
 
-You can then create your custom LLM via the new ```HAL9000``` file:
+You can then ```create``` your custom LLM via the new ```HAL9000``` file:
 ```
 ollama create hal9000 -f HAL9000
 ```
+
+Proceed to ```run``` the model whenever you want:
+```
+ollama run hal9000
+```
+
+You can exit the chat with **HAL9000** at any time:
+```
+/bye
+```
+
+<br/><br/>
 
 Run the ollama pull command for ```Qwen2:0.5B``` (```300 MB``` - ```0.5 Parameters```:
 ```
@@ -495,8 +507,8 @@ Run the following command in a separate terminal window (while your ```kubectl p
 
 ```
 curl http://localhost:8080/api/generate -d '{
-  "model": "qwen2:0.5b",
-  "prompt": "Who is Elon Musk?",
+  "model": "hal9000:latest",
+  "prompt": "What is the plot of the movie 2001: A Space Odyssey?",
   "stream": false
 }'
 ```
