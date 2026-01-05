@@ -42,7 +42,7 @@ data:
       sleep 2
     done
     
-    # 3. Pull the base model and create Nigel
+    # 3. Pull the base model and create Nigel (~390MB)
     echo "Securing the supply chain... Pulling qwen2.5:0.5b"
     /usr/bin/ollama pull qwen2.5:0.5b
     
