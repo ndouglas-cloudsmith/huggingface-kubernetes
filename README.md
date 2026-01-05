@@ -467,6 +467,14 @@ ollama show nigelGPT
 
 <img width="892" height="612" alt="Screenshot 2026-01-04 at 00 38 12" src="https://github.com/user-attachments/assets/609dff88-86a7-45ba-9d28-20db938ccb9f" />
 
+Changing the ```modelfile``` associated with the model will appear in the ```show``` command
+
+<img width="1504" height="680" alt="Screenshot 2026-01-05 at 11 59 52" src="https://github.com/user-attachments/assets/6a05962c-955a-4ee5-b978-adadbf040b82" />
+
+<img width="1504" height="680" alt="Screenshot 2026-01-05 at 12 02 28" src="https://github.com/user-attachments/assets/8c112d85-f726-4bbe-b842-21889452ad61" />
+
+
+
 Alternatively, you can show the entire ```modelfile``` associated with the LLM model
 ```
 ollama show --modelfile NigelCloudsmith
