@@ -12,6 +12,11 @@ Make sure everything is running in the ```llm``` network namespace:
 kubectl get all -n llm
 ```
 
+It could take a minute or two for the LLM model to installed within the running pod, check the ```pod logs``` to track the progress
+```
+kubectl logs -f -n llm deployment/llm-ollama-deployment
+```
+
 You should see your image locally:
 ```
 docker images | awk '
