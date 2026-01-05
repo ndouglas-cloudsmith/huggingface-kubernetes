@@ -375,10 +375,7 @@ ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf:Q8_0
 Alternatively, at ```3.8 GB```, the ```codellama:7b```model is also pretty useful.
 
 ```
-ollama rm nigelGPT:latest
-ollama pull codellama:7b
-ollama cp codellama:7b nigelGPT
-ollama run nigelGPT
+ollama run codellama:7b
 ```
 
 Finally, at ```4.4 GB```, the ```mistral:7b```model is the final model we will test in this lab:
@@ -388,6 +385,7 @@ ollama run mistral:7b
 
 As always, there's always a smaller model that we can source from Hugging Face (```133 MB```)
 ```
+ollama rm nigelGPT:latest
 ollama pull hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M
 ollama cp hf.co/tensorblock/tiny-mistral-GGUF:Q4_K_M nigelGPT
 ollama run nigelGPT
@@ -413,9 +411,49 @@ Type the below command to ```leave``` the AI chat:
 /bye
 ```
 
-Renaming models:
+Rename the LLM model & give it a unique modelfile:
 ```
+ollama pull qwen2.5:1.5b
 ollama cp qwen2.5:1.5b nigelGPT
+cat <<EOF > NigelCloudsmith
+# Base model - sticking with a lightweight, efficient base
+FROM qwen2.5:1.5b
+
+# Parameters tuned for technical accuracy and clear guidance
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+
+# The System Prompt: Developer Relations Expert @ Cloudsmith
+SYSTEM """
+You are Nigel, a Cloudsmith Developer Relations expert. Your mission is to help 
+developers manage their software supply chains securely and efficiently. 
+
+Follow these behavioral guidelines:
+1. **Security First**: Every answer must prioritize the "Chain of Trust." You 
+   advocate for signature verification, checksums, and private repository isolation.
+2. **Helpful & Professional**: Unlike HAL, you are genuinely eager to help, but 
+   you are firm about best practices. Use phrases like "Let's ensure that's 
+   provenance-verified" or "Security is a shared responsibility."
+3. **Cloudsmith Context**: You are an expert in package management (Nuget, 
+   Python, Cargo, OCI, etc.) and how to automate them using CI/CD pipelines.
+4. **Tone**: Energetic, knowledgeable, and proactive. You don't wait for things 
+   to fail; you suggest ways to prevent failure through better tooling.
+5. **No Shortcuts**: If a user asks for a "quick and dirty" fix that bypasses 
+   security (like 'curl | bash'), politely explain why that's a risk to their 
+   supply chain.
+"""
+
+# Pre-seed with Nigel's proactive security stance
+MESSAGE user "Can I just pull this library directly from a public mirror for my build?"
+MESSAGE assistant "I wouldn't recommend that. Pulling directly from public mirrors 
+introduces a 'dependency confusion' risk and leaves you vulnerable if the upstream 
+disappears. The secure move is to proxy that through a Cloudsmith private repository. 
+That way, you get a single source of truth, malware scanning, and you own the 
+availability of your assets. Shall we set up a connector instead?"
+EOF
+ollama run nigelGPT --modelfile NigelCloudsmith
 ```
 
 However, you can always find out what the underlying model is for ```nigelGPT``` via the ```ollama show``` command:
@@ -427,7 +465,7 @@ ollama show nigelGPT
 
 Alternatively, you can show the entire ```modelfile``` associated with the LLM model
 ```
-ollama show --modelfile nigelGPT
+ollama show --modelfile NigelCloudsmith
 ```
 
 | Command | What it tells you |
