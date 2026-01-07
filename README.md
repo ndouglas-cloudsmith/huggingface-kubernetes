@@ -943,6 +943,16 @@ python3 -m pip install "huggingface_hub[requests]"
 python3 push-model.py
 ```
 
+## Pull then Push to Cloudsmith (single script)
+
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/pull-and-push.py
+```
+
+```
+python3 pull-and-push.py
+```
+
 ## Securely source models from Cloudsmith
 Configure the following environment variables to connect HuggingFace to Cloudsmith
 ```
