@@ -900,7 +900,7 @@ kubectl delete ns monitoring
 helm uninstall kube-prom-stack -n monitoring
 ```
 
-## Pushing models to Cloudsmith
+## Pull Hugging Face model locally
 To fetch the ```Qwen``` model locally, you can bypass the environment variable temporarily in Python:
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/download-model.py
@@ -909,4 +909,17 @@ python3 -m pip install huggingface_hub
 
 ```
 python3 download-model.py
+```
+
+## Push model to Cloudsmith
+
+If you want to move immediately to the ```Push``` phase, you'll need to install the "```request```" extras as well, as Cloudsmith uploads via HTTP. <br/>
+Remember to update your ```Access Token``` / ```API Key``` in the script before attempting to push:
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/push-model.py
+python3 -m pip install "huggingface_hub[requests]"
+```
+
+```
+python3 push-model.py
 ```
