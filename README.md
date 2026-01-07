@@ -939,6 +939,7 @@ wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernete
 python3 -m pip install "huggingface_hub[requests]"
 ```
 
+This pushes the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` ONLY - no associated ```model card``` was provided in this original download.
 ```
 python3 push-model.py
 ```
@@ -949,8 +950,16 @@ python3 push-model.py
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/pull-and-push.py
 ```
 
+This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated files before pushing them to Cloudsmith. <br/>
+This was like ```3+ GB``` to download, so I'll use a smaller model and associated files for future demo scenarios.
+
 ```
 python3 pull-and-push.py
+```
+
+Next I will test downloading artifacts from the Cloudsmith registry:
+```
+hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
 ```
 
 ## Securely source models from Cloudsmith
