@@ -956,7 +956,8 @@ This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated
 python3 pull-and-push.py
 ```
 
-![Uploading Screenshot 2026-01-07 at 17.44.05.png…]()
+<img width="1508" height="394" alt="Screenshot 2026-01-07 at 17 44 05" src="https://github.com/user-attachments/assets/2fa836b3-a071-460d-9c60-c97ef4c2466c" />
+
 
 
 
