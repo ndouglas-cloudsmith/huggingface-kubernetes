@@ -956,6 +956,10 @@ This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated
 python3 pull-and-push.py
 ```
 
+![Uploading Screenshot 2026-01-07 at 17.44.05.png…]()
+
+
+
 Next I will test downloading artifacts from the Cloudsmith registry:
 ```
 hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
