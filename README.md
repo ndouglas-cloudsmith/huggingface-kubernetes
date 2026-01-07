@@ -965,6 +965,9 @@ It deletes the local folder before the download starts, ensuring that if you pre
 - Result: Your console should show "Upload 2 files" instead of "Upload 9 LFS files" as was seen in previous iterations of this script.
 
 
+<img width="1508" height="666" alt="Screenshot 2026-01-07 at 18 00 00" src="https://github.com/user-attachments/assets/09fe440f-87cf-42e9-af34-cb397bfadd79" />
+
+
 Securely sourcing ML artifacts from the Cloudsmith registry:
 ```
 hf download acme-corporation/qwen-0.5b
