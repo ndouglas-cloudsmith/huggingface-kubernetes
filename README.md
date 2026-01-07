@@ -935,3 +935,8 @@ python3 -m pip install "huggingface_hub[requests]"
 ```
 python3 push-model.py
 ```
+
+## Secuerely source models from Cloudsmith
+```
+hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
+```
