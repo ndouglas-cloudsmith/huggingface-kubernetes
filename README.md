@@ -950,8 +950,7 @@ python3 push-model.py
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/pull-and-push.py
 ```
 
-This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated files before pushing them to Cloudsmith. <br/>
-This version will only download the ```README.md``` (**the model card**) and the specific ```Q4_K_M file``` I was looking for.
+This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated files before pushing them to Cloudsmith. This version will only download the ```README.md``` (**the model card**) and the specific ```Q4_K_M file``` I was looking for.
 
 ```
 python3 pull-and-push.py
