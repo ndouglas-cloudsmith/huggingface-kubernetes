@@ -958,20 +958,20 @@ python3 pull-and-push.py
 
 <img width="1508" height="394" alt="Screenshot 2026-01-07 at 17 44 05" src="https://github.com/user-attachments/assets/2fa836b3-a071-460d-9c60-c97ef4c2466c" />
 
+- ```local_dir```: By default, Hugging Face uses a complex nested cache folder (usually in ```~/.cache/huggingface```). <br/>
+Using ```local_dir``` makes the download behave like a normal "Save As..." to a folder on your Desktop.
+- ```shutil.rmtree```: This part is the "**nuclear option**". <br/>
+It deletes the local folder before the download starts, ensuring that if you previously downloaded ```Q8_0.gguf``` into that same folder, it gets wiped out before the upload starts.
+- Result: Your console should show "Upload 2 files" instead of "Upload 9 LFS files" as was seen in previous iterations of this script.
 
 
-
-Next I will test downloading artifacts from the Cloudsmith registry:
+Securely sourcing ML artifacts from the Cloudsmith registry:
 ```
-hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
+hf download acme-corporation/qwen-0.5b
 ```
 
-## Securely source models from Cloudsmith
-Configure the following environment variables to connect HuggingFace to Cloudsmith
+You may need to configure the following environment variables to connect HuggingFace to Cloudsmith (if you haven't done so already).
 ```
 export HF_TOKEN=[cloud-api-key]
 export HF_ENDPOINT=https://huggingface.cloudsmith.io/acme-corporation/acme-repo-one
-```
-```
-hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
 ```
