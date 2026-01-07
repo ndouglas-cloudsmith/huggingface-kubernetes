@@ -899,3 +899,13 @@ kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingf
 kubectl delete ns monitoring
 helm uninstall kube-prom-stack -n monitoring
 ```
+
+## Pushing models to Cloudsmith
+To fetch the ```Qwen``` model locally, you can bypass the environment variable temporarily in Python:
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/download-model.py
+```
+
+```
+python3 download-model.py
+```
