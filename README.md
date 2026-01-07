@@ -911,6 +911,18 @@ python3 -m pip install huggingface_hub
 python3 download-model.py
 ```
 
+1. Create the folder that the script is looking for:
+```
+mkdir -p ~/Desktop/my-local-model-folder
+```
+
+2. Find where HuggingFace cached the file and copy it to your new folder
+```
+find ~/.cache/huggingface -name "Qwen2.5-0.5B-Instruct-Q4_K_M.gguf" -exec cp {} ~/Desktop/my-local-model-folder/ \;
+```
+
+(This command searches your ```HF cache``` for the GGUF file and copies it)
+
 ## Push model to Cloudsmith
 
 If you want to move immediately to the ```Push``` phase, you'll need to install the "```request```" extras as well, as Cloudsmith uploads via HTTP. <br/>
