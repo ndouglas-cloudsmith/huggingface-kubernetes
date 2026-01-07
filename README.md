@@ -936,7 +936,12 @@ python3 -m pip install "huggingface_hub[requests]"
 python3 push-model.py
 ```
 
-## Secuerely source models from Cloudsmith
+## Securely source models from Cloudsmith
+Configure the following environment variables to connect HuggingFace to Cloudsmith
+```
+export HF_TOKEN=[cloud-api-key]
+export HF_ENDPOINT=https://huggingface.cloudsmith.io/acme-corporation/acme-repo-one
+```
 ```
 hf download acme-corporation/qwen-0.5b --local-dir ./my-local-model-folder
 ```
