@@ -1,6 +1,6 @@
 # Securing LLM models from Hugging Face
 Creating LLMs is a specialised task that often depends on third-party models.
-The rise of openaccess LLMs and new fine-tuning methods like "[LoRA](https://www.ibm.com/think/topics/lora)" (Low-Rank Adaptation) and "[PEFT](https://huggingface.co/blog/peft)" (Parameter-Efficient Fine-Tuning), especially on platforms like **Hugging Face**, introduce new supply-chain risks.
+The rise of [Open-Access](https://www.youtube.com/watch?v=_xpAcWIlxak) LLMs and new fine-tuning methods like "[LoRA](https://www.ibm.com/think/topics/lora)" (Low-Rank Adaptation) and "[PEFT](https://huggingface.co/blog/peft)" (Parameter-Efficient Fine-Tuning), especially on platforms like **Hugging Face**, introduce new supply-chain risks.
 Finally, the emergence of on-device LLMs increase the attack surface and supply-chain risks for LLM applications. 
 
 
