@@ -951,7 +951,7 @@ wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernete
 ```
 
 This downloads the ```bartowski/Qwen2.5-0.5B-Instruct-GGUF``` and all associated files before pushing them to Cloudsmith. <br/>
-This was like ```7.42GB``` to download which takes about ```05:18``` at ```23.3MB/s```, so I'll use a smaller model for future demo scenarios.
+This version will only download the ```README.md``` (**the model card**) and the specific ```Q4_K_M file``` I was looking for.
 
 ```
 python3 pull-and-push.py
