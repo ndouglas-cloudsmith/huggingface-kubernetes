@@ -973,6 +973,16 @@ Securely sourcing ML artifacts from the Cloudsmith registry:
 hf download acme-corporation/qwen-0.5b
 ```
 
+Alternatively, you can download the [HuggingFaceTB/SmolVLM-256M-Instruct](https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct) model with its model card. <br/>
+Rename the model to something shorter like ```nigelGPT``` and then push those files to Cloudsmith. Take note of ```organisation``` name and ```license``` info as these will matter for ```EPM``` policies later on.
+
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf.py
+python3 automate-hf.py
+```
+
+
+
 You may need to configure the following environment variables to connect HuggingFace to Cloudsmith (if you haven't done so already).
 ```
 export HF_TOKEN=[cloud-api-key]
