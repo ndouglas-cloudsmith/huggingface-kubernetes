@@ -988,3 +988,26 @@ You may need to configure the following environment variables to connect Hugging
 export HF_TOKEN=[cloud-api-key]
 export HF_ENDPOINT=https://huggingface.cloudsmith.io/acme-corporation/acme-repo-one
 ```
+
+## Interacting with the local cache
+
+To see exactly what’s living in your local Hugging Face cache and to clean it up, you don't need to dig through hidden folders manually. <br/>
+Hugging Face provides a built-in tool called [huggingface-cli](https://formulae.brew.sh/formula/huggingface-cli) specifically for this.
+```
+brew install huggingface-cli
+```
+
+How to see what's in the cache
+```
+huggingface-cli scan-cache
+```
+
+How to clean the cache (surgical way - recommended):
+```
+huggingface-cli delete-cache
+```
+
+If you just want to wipe everything and start fresh to reclaim space on your MacBook (the Nuclear approach)
+```
+rm -rf ~/.cache/huggingface/hub
+```
