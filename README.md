@@ -1009,6 +1009,10 @@ How to clean the cache (surgical way - recommended):
 huggingface-cli delete-cache
 ```
 
+List the contents of the cache manually:
+```
+ls -R ~/.cache/huggingface/hub
+```
 If you just want to wipe everything and start fresh to reclaim space on your MacBook (the Nuclear approach)
 ```
 rm -rf ~/.cache/huggingface/hub
