@@ -1083,6 +1083,9 @@ wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernete
 python3 automate-hf-4.py
 ```
 
+<img width="1510" height="570" alt="Screenshot 2026-01-08 at 23 13 12" src="https://github.com/user-attachments/assets/031713bf-f0ff-4099-92da-0d304595e0c6" />
+
+
 Cleanup packages after policy evaluation:
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/cleanup.sh
