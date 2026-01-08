@@ -1020,12 +1020,70 @@ rm -rfv ~/.cache/huggingface/hub
 
 ## Testing EPM policies against Hugging Face models
 
+Create a ```licensing.rego``` Rego policy:
 ```
-wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-3.py
-python3 automate-hf-3.py
+cat <<'EOF' > licensing.rego
+package cloudsmith
+default match := false
+# Define your allowlist of accepted SPDX identifiers
+allowed_licenses := {"mit", "MIT license", "MIT", "apache-2.0"}
+match if count(reason) > 0
+reason contains msg if {
+    pkg := input.v0["package"]
+    raw_license := lower(pkg.license.raw_license)
+    
+    # Check if the license is NOT in the allowed set
+    not is_allowed(raw_license)
+    
+    msg := sprintf("License '%s' is not on the approved list (MIT, Apache-2.0)", [pkg.license.raw_license])
+}
+# Added the 'if' keyword here to satisfy the parser
+is_allowed(license) if {
+    allowed_licenses[license]
+}
+EOF
 ```
 
-## Cleanup (Packages)
+Wrap the Rego policy into a ```payload.json``` file and then ```POST``` it to the Cloudsmith API:
+```
+escaped_policy=$(jq -Rs . < licensing.rego)
+cat <<EOF > payload.json
+{
+  "name": "None Approved Licensing",
+  "description": "Blocklist for all non-MIT and Apache 2.0 licenses.",
+  "rego": $escaped_policy,
+  "enabled": true,
+  "is_terminal": true,
+  "precedence": 0
+}
+EOF
+
+curl -X POST "https://api.cloudsmith.io/v2/workspaces/acme-corporation/policies/" \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: $CLOUDSMITH_API_KEY" \
+  -d @payload.json | jq .
+```
+
+Export the policy ```slug_perm``` and assign a ```Quarantine``` action for your newly-created policy:
+```
+export SLUG_PERM=$(curl -s -X GET "https://api.cloudsmith.io/v2/workspaces/acme-corporation/policies/" -H "X-Api-Key: $CLOUDSMITH_API_KEY" | jq -r '.results[0].slug_perm')
+curl -X POST "https://api.cloudsmith.io/v2/workspaces/acme-corporation/policies/$SLUG_PERM/actions/" \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: $CLOUDSMITH_API_KEY" \
+  -d '{
+    "action_type": "SetPackageState",
+    "precedence": 1,
+    "package_state": "QUARANTINED"
+  }'   | jq .
+```
+
+Once the policies are created, download and push the below Hugging Face models to Cloudsmith to evaluate the policy action:
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-4.py
+python3 automate-hf-4.py
+```
+
+Cleanup packages after policy evaluation:
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/cleanup.sh
 chmod +x cleanup.sh
