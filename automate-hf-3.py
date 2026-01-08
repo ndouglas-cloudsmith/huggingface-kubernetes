@@ -7,9 +7,10 @@ TARGET_ORG = "acme-corporation"
 
 # The list of models you want to migrate
 SOURCE_REPOS = [
-    "HuggingFaceTB/SmolVLM-256M-Instruct",
-    "microsoft/DialoGPT-small",
-    "nvidia/esm2_t12_35M_UR50D"
+    "HuggingFaceTB/SmolVLM-256M-Instruct", # Apache 2.0
+    "microsoft/DialoGPT-small",            # MIT
+    "nvidia/esm2_t12_35M_UR50D",           # Creative Commons Attribution-NonCommercial 4.0
+    "meta-llama/Llama-3.2-1B-Instruct"     # Llama 3.2 Community License (Custom)
 ]
 
 api = HfApi()
