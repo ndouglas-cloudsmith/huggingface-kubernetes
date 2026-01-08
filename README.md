@@ -1028,5 +1028,7 @@ python3 automate-hf-3.py
 ## Cleanup (Packages)
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/cleanup.sh
+chmod +x cleanup.sh
+./cleanup.sh
 ```
 
