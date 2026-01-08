@@ -1015,7 +1015,7 @@ ls -R ~/.cache/huggingface/hub
 ```
 If you just want to wipe everything and start fresh to reclaim space on your MacBook (the Nuclear approach)
 ```
-rm -rf ~/.cache/huggingface/hub
+rm -rfv ~/.cache/huggingface/hub
 ```
 
 ## Testing EPM policies against Hugging Face models
