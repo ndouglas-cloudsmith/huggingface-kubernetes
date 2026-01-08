@@ -1,35 +1,35 @@
 import os
 from huggingface_hub import HfApi, hf_hub_download, CommitOperationAdd
 
-# 1. Setup API clients
-# Use a token if you have one, though these models are public/ungated
 public_api = HfApi(endpoint="https://huggingface.co")
-
-# Setting up your target Cloudsmith endpoint
 os.environ["HF_ENDPOINT"] = "https://huggingface.cloudsmith.io/acme-corporation/acme-repo-one"
 target_api = HfApi()
 
 TARGET_ORG = "acme-corporation"
-
-# UPDATED: Small, ungated models with different licenses for testing
 SOURCE_REPOS = [
-    "sentence-transformers/all-MiniLM-L6-v2",    # Apache 2.0
-    "prajjwal1/bert-tiny",                       # MIT
-    "nvidia/nemotron-speech-streaming-en-0.6b",  # Other
+    "sentence-transformers/all-MiniLM-L6-v2",
+    "prajjwal1/bert-tiny",
+    "unsloth/Llama-3.2-1B",
+    "litert-community/Gemma3-1B-IT", 
 ]
 
 migration_results = []
 
-def get_weight_filename(repo_id):
-    """Checks the repo to see which weight file exists."""
+def get_weight_filenames(repo_id):
+    """Returns a list of all weight-related files (shards or single files)."""
     files = public_api.list_repo_files(repo_id)
-    if "model.safetensors" in files:
-        return "model.safetensors"
-    if "pytorch_model.bin" in files:
-        return "pytorch_model.bin"
-    if "tf_model.h5" in files:
-        return "tf_model.h5"
-    return None
+    
+    # Check for sharded safetensors first (Common for Llama 3.1)
+    if "model.safetensors.index.json" in files:
+        shards = [f for f in files if "model-00" in f and f.endswith(".safetensors")]
+        return ["model.safetensors.index.json"] + shards
+    
+    # Check for single files
+    for single_file in ["model.safetensors", "pytorch_model.bin", "tf_model.h5"]:
+        if single_file in files:
+            return [single_file]
+            
+    return []
 
 for repo in SOURCE_REPOS:
     model_short_name = repo.split("/")[-1]
@@ -37,35 +37,33 @@ for repo in SOURCE_REPOS:
     print(f"\n--- Processing: {model_short_name} ---")
 
     try:
-        # 1. Fetch Metadata
         info = public_api.model_info(repo)
         raw_license = "unknown"
-        
         if hasattr(info, 'card_data') and info.card_data:
             raw_license = info.card_data.get("license", "unknown")
         
-        # Convert list to comma-separated string if necessary
         license_type = ", ".join(raw_license) if isinstance(raw_license, list) else str(raw_license)
         print(f"Detected License: {license_type}")
 
-        # 2. Determine and Download Weight File
-        weights_filename = get_weight_filename(repo)
-        if not weights_filename:
+        # 2. Get list of files
+        weights_list = get_weight_filenames(repo)
+        if not weights_list:
             raise FileNotFoundError(f"No standard weight files found in {repo}")
 
-        print(f"Downloading {weights_filename} and README.md...")
+        print(f"Downloading {len(weights_list)} weight file(s) and README.md...")
         
+        operations = []
+        # Download README
         card_path = hf_hub_download(repo_id=repo, filename="README.md")
-        model_path = hf_hub_download(repo_id=repo, filename=weights_filename)
+        operations.append(CommitOperationAdd(path_in_repo="README.md", path_or_fileobj=card_path))
+
+        # Download all weight files (shards or single)
+        for weight_file in weights_list:
+            file_path = hf_hub_download(repo_id=repo, filename=weight_file)
+            operations.append(CommitOperationAdd(path_in_repo=weight_file, path_or_fileobj=file_path))
 
         # 3. Push to Cloudsmith
-        operations = [
-            CommitOperationAdd(path_in_repo=weights_filename, path_or_fileobj=model_path),
-            CommitOperationAdd(path_in_repo="README.md", path_or_fileobj=card_path)
-        ]
-
         commit_msg = f"Migrated {model_short_name} | License: {license_type}"
-        
         target_api.create_commit(
             repo_id=f"{TARGET_ORG}/{model_short_name}",
             operations=operations,
@@ -87,5 +85,5 @@ print("\n" + "="*80)
 print(f"{'MODEL':<35} | {'LICENSE':<20} | {'STATUS'}")
 print("-" * 80)
 for name, lic, status in migration_results:
-    print(f"{name:<35} | {str(lic):<20} | {status}")
+    print(f"{name:<35} | {str(lic)[:20]:<20} | {status}")
 print("="*80)
