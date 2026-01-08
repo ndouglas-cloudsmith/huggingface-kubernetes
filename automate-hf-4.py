@@ -15,7 +15,7 @@ TARGET_ORG = "acme-corporation"
 SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",    # Apache 2.0
     "prajjwal1/bert-tiny",                       # MIT
-    "Lightricks/LTX-2",         		         # ltx-2-community-license-agreement
+    "nvidia/nemotron-speech-streaming-en-0.6b",  # Other
 ]
 
 migration_results = []
