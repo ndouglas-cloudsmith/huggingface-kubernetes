@@ -992,9 +992,11 @@ export HF_ENDPOINT=https://huggingface.cloudsmith.io/acme-corporation/acme-repo-
 ## Interacting with the local cache
 
 To see exactly what’s living in your local Hugging Face cache and to clean it up, you don't need to dig through hidden folders manually. <br/>
-Hugging Face provides a built-in tool called [huggingface-cli](https://formulae.brew.sh/formula/huggingface-cli) specifically for this.
+Hugging Face provides a built-in tool called [huggingface-cli](https://formulae.brew.sh/formula/huggingface-cli) specifically for this. <br/>
+Whereas, the [huggingface_hub](https://huggingface.co/docs/huggingface_hub/en/index) library allows you to interact with the Hugging Face Hub.
 ```
 brew install huggingface-cli
+python3 -m pip install huggingface_hub --break-system-packages
 ```
 
 How to see what's in the cache
