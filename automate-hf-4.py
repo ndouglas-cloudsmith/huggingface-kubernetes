@@ -13,11 +13,11 @@ target_api = HfApi()
 TARGET_ORG = "acme-corporation"
 
 SOURCE_REPOS = [
-    "HuggingFaceTB/SmolVLM-256M-Instruct",
-    "microsoft/DialoGPT-small",
-    "nvidia/esm2_t12_35M_UR50D",
-    "bigscience/bloom-560m",
-    "tiiuae/falcon-rw-1b"
+    "HuggingFaceTB/SmolVLM-256M-Instruct", # Apache 2.0 (~500MB)
+    "microsoft/DialoGPT-small",            # MIT (~350MB)
+    "nvidia/esm2_t12_35M_UR50D",           # MIT/Custom (~130MB)
+    "PrunaAI/gpt2-tiny-opt",               # OpenRAIL (~45MB)
+    "squeezebert/squeezebert-uncased"      # BSD 3-Clause (~100MB)
 ]
 
 for repo in SOURCE_REPOS:
