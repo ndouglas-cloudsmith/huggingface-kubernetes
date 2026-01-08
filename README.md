@@ -1017,3 +1017,10 @@ If you just want to wipe everything and start fresh to reclaim space on your Mac
 ```
 rm -rf ~/.cache/huggingface/hub
 ```
+
+## Testing EPM policies against Hugging Face models
+
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-3.py
+python3 automate-hf-3.py
+```
