@@ -10,7 +10,9 @@ SOURCE_REPOS = [
     "HuggingFaceTB/SmolVLM-256M-Instruct", # Apache 2.0
     "microsoft/DialoGPT-small",            # MIT
     "nvidia/esm2_t12_35M_UR50D",           # Creative Commons Attribution-NonCommercial 4.0
-    "meta-llama/Llama-3.2-1B-Instruct"     # Llama 3.2 Community License (Custom)
+#   "meta-llama/Llama-3.2-1B-Instruct"     # Llama 3.2 Community License (Custom)
+    "bigscience/bloom-560m",               # BigScience RAIL (Behavioural Restrictions)
+    "tiiuae/falcon-rw-1b"                  # TII Falcon Custom License    
 ]
 
 api = HfApi()
