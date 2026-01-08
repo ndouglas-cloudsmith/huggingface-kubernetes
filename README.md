@@ -900,7 +900,7 @@ kubectl get pods --show-labels
 alias kubectl="kubecolor"
 ```
 
-## Cleanup
+## Cleanup (Kubernetes)
 ```
 kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/deployment.yaml
 kubectl delete ns monitoring
@@ -1024,3 +1024,9 @@ rm -rfv ~/.cache/huggingface/hub
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-3.py
 python3 automate-hf-3.py
 ```
+
+## Cleanup (Packages)
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/cleanup.sh
+```
+
