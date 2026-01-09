@@ -1088,6 +1088,7 @@ python3 automate-hf-4.py
 
 Cleanup packages after policy evaluation:
 ```
+rm cleanup.sh
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/cleanup.sh
 chmod +x cleanup.sh
 ./cleanup.sh
