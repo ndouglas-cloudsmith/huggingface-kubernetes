@@ -16,16 +16,16 @@ target_api = HfApi()
 
 TARGET_ORG = "acme-corporation"
 SOURCE_REPOS = [
-    "sentence-transformers/all-MiniLM-L6-v2",
-    "prajjwal1/bert-tiny",
-    "govtech/lionguard-2",
-    "bs-la/bloomz-7b1-500m-ru",
-    "nqzfaizal77ai/solstice-pulse-pt-gpt2-100m",
-    "aphexblake/200-msf-v2",
-    "facebook/mms-300m",
+    "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
+    "prajjwal1/bert-tiny",                               # mit 
+    "govtech/lionguard-2",                               # other
+    "bs-la/bloomz-7b1-500m-ru",                          # bigscience-bloom-rail-1.0
+    "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0
+    "nqzfaizal77ai/solstice-pulse-pt-gpt2-100m",         # openrail
+    "aphexblake/200-msf-v2",                             # creativeml-openrail-m
+    "facebook/mms-300m",                                 # cc-by-nc-4.0
 #   "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",,
-#   "elRivx/100Memories",
-#   "song9/embeddinggemma-300m-KorSTS",
+#   "elRivx/100Memories",,
 #   "nikitastheo/BERTtime-Stories-100m-nucleus-1",
 #   "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",
 #   "h2oai/h2o-danube3-500m-chat",
