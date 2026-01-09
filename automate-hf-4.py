@@ -20,7 +20,7 @@ SOURCE_REPOS = [
     "govtech/lionguard-2",
     "nqzfaizal77ai/solstice-pulse-pt-gpt2-100m",
 #   "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",
-#   "aphexblake/200-msf-v2",
+    "aphexblake/200-msf-v2",
 #   "elRivx/100Memories",
 #   "song9/embeddinggemma-300m-KorSTS",
     "facebook/mms-300m",
