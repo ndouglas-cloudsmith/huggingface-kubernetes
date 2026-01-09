@@ -5,7 +5,7 @@ OWNER="acme-corporation"
 REPOSITORY="acme-repo-one"
 
 # Define multiple tags in an array
-TAGS=("transformer" "feature-extraction" "classifier")
+TAGS=("transformer" "feature-extraction" "classifier" "facebook" "causal-lm" "llm" "multilingual")
 
 PAGE_SIZE=250
 BASE_URL="https://api.cloudsmith.io/v1/packages/${OWNER}/${REPOSITORY}/"
