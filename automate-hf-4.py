@@ -1,4 +1,5 @@
 import os
+import re
 from huggingface_hub import HfApi, hf_hub_download, CommitOperationAdd
 
 # ANSI Color Codes
@@ -18,12 +19,13 @@ SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",
     "prajjwal1/bert-tiny",
     "govtech/lionguard-2",
+    "bs-la/bloomz-7b1-500m-ru",
     "nqzfaizal77ai/solstice-pulse-pt-gpt2-100m",
-#   "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",
     "aphexblake/200-msf-v2",
+    "facebook/mms-300m",
+#   "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",,
 #   "elRivx/100Memories",
 #   "song9/embeddinggemma-300m-KorSTS",
-    "facebook/mms-300m",
 #   "nikitastheo/BERTtime-Stories-100m-nucleus-1",
 #   "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",
 #   "h2oai/h2o-danube3-500m-chat",
@@ -34,6 +36,10 @@ SOURCE_REPOS = [
 ]
 
 migration_results = []
+
+def len_visible(text):
+    """Calculates the visible length of a string, ignoring ANSI escape sequences."""
+    return len(re.sub(r'\x1b\[[0-9;]*m', '', text))
 
 def get_color_license(license_str):
     """Returns the license string wrapped in the appropriate ANSI color."""
@@ -72,7 +78,6 @@ def get_repo_files_to_migrate(repo_id):
 
 for repo in SOURCE_REPOS:
     model_short_name = repo.split("/")[-1]
-    license_type = "pending..." 
     print(f"\n{BOLD}--- Processing: {model_short_name} ---{RESET}")
 
     try:
@@ -97,7 +102,6 @@ for repo in SOURCE_REPOS:
         print(f"Downloading {len(files_to_migrate)} files...")
         operations = []
         for filename in files_to_migrate:
-            # Print filename in Blue
             print(f"Fetching: {BLUE}{filename}{RESET}")
             file_path = hf_hub_download(repo_id=repo, filename=filename)
             operations.append(CommitOperationAdd(path_in_repo=filename, path_or_fileobj=file_path))
@@ -120,10 +124,19 @@ for repo in SOURCE_REPOS:
         migration_results.append((model_short_name, RED + "Error" + RESET, status))
 
 # --- FINAL REPORT ---
-print("\n" + "="*80)
-print(f"{BOLD}{'MODEL':<35} | {'LICENSE':<30} | {'STATUS'}{RESET}")
-print("-" * 80)
+# Widths: Model=35, License=35, Status=20 (Total ~95 including separators)
+MODEL_COL_WIDTH = 35
+LICENSE_COL_WIDTH = 35
+
+print("\n" + "=" * 95)
+print(f"{BOLD}{'MODEL':<35} | {'LICENSE':<35} | {'STATUS'}{RESET}")
+print("-" * 95)
+
 for name, lic, status in migration_results:
-    # Adjusted padding for license because ANSI codes add invisible characters
-    print(f"{name:<35} | {lic:<30} | {status}")
-print("="*80)
+    # Manual padding to account for invisible ANSI characters
+    name_pad = " " * (MODEL_COL_WIDTH - len_visible(name))
+    lic_pad = " " * (LICENSE_COL_WIDTH - len_visible(lic))
+    
+    print(f"{name}{name_pad} | {lic}{lic_pad} | {status}")
+
+print("=" * 95)
