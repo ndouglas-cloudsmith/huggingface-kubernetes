@@ -9,8 +9,12 @@ TARGET_ORG = "acme-corporation"
 SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",
     "prajjwal1/bert-tiny",
+    "govtech/lionguard-2",
+    "h2oai/h2o-danube3-500m-chat",
+    "microsoft/bitnet_b1_58-large",
+    "stabilityai/stablelm-2-1_6b",
+    "google/gemma-2b",
     "unsloth/Llama-3.2-1B",
-    "litert-community/Gemma3-1B-IT", 
 ]
 
 migration_results = []
