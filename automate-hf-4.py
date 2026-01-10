@@ -1,10 +1,12 @@
 import os
 import re
+import yaml
 from huggingface_hub import HfApi, hf_hub_download, CommitOperationAdd
+from huggingface_hub.repocard import ModelCard, CardData
 
 # ANSI Color Codes
 BLUE = "\033[94m"
-ORANGE = "\033[93m"  # Bright yellow/orange
+ORANGE = "\033[93m"
 RED = "\033[91m"
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -15,6 +17,8 @@ os.environ["HF_ENDPOINT"] = "https://huggingface.cloudsmith.io/acme-corporation/
 target_api = HfApi()
 
 TARGET_ORG = "acme-corporation"
+CUSTOM_TAGS = ["huggingface"] # Your requested custom tag
+
 SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
     "prajjwal1/bert-tiny",                               # mit 
@@ -38,11 +42,9 @@ SOURCE_REPOS = [
 migration_results = []
 
 def len_visible(text):
-    """Calculates the visible length of a string, ignoring ANSI escape sequences."""
     return len(re.sub(r'\x1b\[[0-9;]*m', '', text))
 
 def get_color_license(license_str):
-    """Returns the license string wrapped in the appropriate ANSI color."""
     l_lower = license_str.lower()
     if "mit" in l_lower or "apache-2.0" in l_lower:
         return f"{ORANGE}{license_str}{RESET}"
@@ -103,16 +105,43 @@ for repo in SOURCE_REPOS:
         operations = []
         for filename in files_to_migrate:
             print(f"Fetching: {BLUE}{filename}{RESET}")
+            
+            # Download file
             file_path = hf_hub_download(repo_id=repo, filename=filename)
+            
+            # CUSTOM TAG LOGIC: Intercept README.md
+            if filename == "README.md":
+                print(f"Adding custom tags to {filename}...")
+                card = ModelCard.load(file_path)
+                
+                # Ensure tags field exists and is a list
+                existing_tags = card.data.get("tags", [])
+                if existing_tags is None: existing_tags = []
+                if isinstance(existing_tags, str): existing_tags = [existing_tags]
+                
+                # Merge and deduplicate tags
+                card.data.tags = list(set(existing_tags + CUSTOM_TAGS))
+                
+                # Save modified content to a temporary local file to avoid corrupting HF cache
+                temp_readme = f"temp_readme_{model_short_name}.md"
+                card.save(temp_readme)
+                file_path = temp_readme
+
             operations.append(CommitOperationAdd(path_in_repo=filename, path_or_fileobj=file_path))
 
+        # Create the repository on the target (Cloudsmith) Hub
         target_api.create_commit(
             repo_id=f"{TARGET_ORG}/{model_short_name}",
             operations=operations,
-            commit_message=f"Migrated {model_short_name} | License: {license_str}",
+            commit_message=f"Migrated {model_short_name} | Tags: {', '.join(CUSTOM_TAGS)}",
             repo_type="model"
         )
         
+        # Cleanup temporary readme if it exists
+        temp_readme = f"temp_readme_{model_short_name}.md"
+        if os.path.exists(temp_readme):
+            os.remove(temp_readme)
+
         status = "✅ Success" if has_weights else "⚠️ Success (No Weights)"
         migration_results.append((model_short_name, colored_license, status))
         print(f"Status: {status}")
@@ -124,7 +153,6 @@ for repo in SOURCE_REPOS:
         migration_results.append((model_short_name, RED + "Error" + RESET, status))
 
 # --- FINAL REPORT ---
-# Widths: Model=35, License=35, Status=20 (Total ~95 including separators)
 MODEL_COL_WIDTH = 35
 LICENSE_COL_WIDTH = 35
 
@@ -133,10 +161,8 @@ print(f"{BOLD}{'MODEL':<35} | {'LICENSE':<35} | {'STATUS'}{RESET}")
 print("-" * 95)
 
 for name, lic, status in migration_results:
-    # Manual padding to account for invisible ANSI characters
     name_pad = " " * (MODEL_COL_WIDTH - len_visible(name))
     lic_pad = " " * (LICENSE_COL_WIDTH - len_visible(lic))
-    
     print(f"{name}{name_pad} | {lic}{lic_pad} | {status}")
 
 print("=" * 95)
