@@ -1029,14 +1029,33 @@ rm -rfv ~/.cache/huggingface/hub
 
 ## Using Hugging Face CLI
 
+You can remove the model [aphexblake/200-msf-v2](https://zoo.bimant.com/model/209191) from your local cache with the below command:
+```
+hf cache rm model/aphexblake/200-msf-v2
+hf cache rm model/gpt2
+```
+
+```
+HF_ENDPOINT=https://huggingface.co hf download gpt2 config.json model.safetensors
+```
+
 Instead of manually digging through nested directories, Hugging Face provides a built-in tool to manage and locate cached files.
 ```
 hf cache ls
 ```
 
-You can remove the model [aphexblake/200-msf-v2](https://zoo.bimant.com/model/209191) from your local cache with the below command:
 ```
-hf cache rm model/aphexblake/200-msf-v2
+ls /Users/ndouglas/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e
+```
+
+```
+ls -lh /Users/ndouglas/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e
+```
+
+Since [.safetensors](https://huggingface.co/docs/safetensors/en/index) is a binary format (specifically designed to store model weights efficiently), running ```cat``` will fill your terminal with "[mojibake](https://en.wikipedia.org/wiki/Mojibake)" (nonsense characters) and potentially mess up your terminal's character encoding.
+
+```
+cat /Users/ndouglas/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/model.safetensors
 ```
 
 ## Testing EPM policies against Hugging Face models
