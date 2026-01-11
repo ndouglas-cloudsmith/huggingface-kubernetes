@@ -1085,6 +1085,11 @@ python3 automate-hf-4.py
 
 <img width="1510" height="570" alt="Screenshot 2026-01-08 at 23 13 12" src="https://github.com/user-attachments/assets/031713bf-f0ff-4099-92da-0d304595e0c6" />
 
+Confirm the packages exist on Cloudsmith under the ```format``` "huggingface"
+
+```
+cloudsmith list packages acme-corporation/acme-repo-one -k "$CLOUDSMITH_API_KEY" -q "format:huggingface AND tag:huggingface"
+```
 
 Cleanup packages after policy evaluation:
 ```
