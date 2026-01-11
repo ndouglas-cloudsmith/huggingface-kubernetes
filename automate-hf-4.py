@@ -41,6 +41,7 @@ SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
     "prajjwal1/bert-tiny",                               # mit 
     "govtech/lionguard-2",                               # other
+    "nikitastheo/BERTtime-Stories-100m-nucleus-1",       # gpl-3.0    
     "bs-la/bloomz-7b1-500m-ru",                          # bigscience-bloom-rail-1.0
     "nqzfaizal77ai/solstice-pulse-pt-gpt2-100m",         # openrail
     "aphexblake/200-msf-v2",                             # creativeml-openrail-m
@@ -48,7 +49,6 @@ SOURCE_REPOS = [
     "facebook/mms-300m",                                 # cc-by-nc-4.0
     "unsloth/Llama-3.2-1B",                              # llama3.2
     "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
-    "nikitastheo/BERTtime-Stories-100m-nucleus-1",    
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
 #   "elRivx/100Memories",,
 #   "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",
