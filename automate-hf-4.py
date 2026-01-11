@@ -46,12 +46,12 @@ SOURCE_REPOS = [
     "aphexblake/200-msf-v2",                             # creativeml-openrail-m
     "facebook/mms-300m",                                 # cc-by-nc-4.0
     "unsloth/Llama-3.2-1B",                              # llama3.2
-#   "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",
+    "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
+    "h2oai/h2o-danube3-500m-chat",                       # apache-2.0
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
 #   "elRivx/100Memories",,
 #   "nikitastheo/BERTtime-Stories-100m-nucleus-1",
 #   "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",
-#   "h2oai/h2o-danube3-500m-chat",
 #   "microsoft/bitnet_b1_58-large",
 #   "stabilityai/stablelm-2-1_6b",
 #   "google/gemma-2b",
