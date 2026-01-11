@@ -121,7 +121,7 @@ for repo in SOURCE_REPOS:
         if size_mb > SIZE_THRESHOLD_MB:
             confirm = input(f"{ORANGE}⚠️ Large Model detected. Continue? (y/n): {RESET}")
             if confirm.lower() != 'y':
-                migration_results.append((model_short_name, colored_license, "⏭️ Skipped", num_files, size_gb))
+                migration_results.append((model_short_name, colored_license, "⏭️  Skipped", num_files, size_gb))
                 continue
 
         print(f"Downloading {num_files} files...")
