@@ -1007,18 +1007,48 @@ Here is an example of using ```grep``` to navigate and read those files effectiv
 ls -R ~/.cache/huggingface/hub | grep bert
 ```
 
-Based on this, you could read the content of a file associated with that path via the below command:
-```
-cat ~/.cache/huggingface/hub/models--prajjwal1--bert-tiny/snapshots/main/config.json
-```
-
-{"hidden_size": 128, "hidden_act": "gelu", "initializer_range": 0.02, "vocab_size": 30522, "hidden_dropout_prob": 0.1, "num_attention_heads": 2, "type_vocab_size": 2, "max_position_embeddings": 512, "num_hidden_layers": 2, "intermediate_size": 512, "attention_probs_dropout_prob": 0.1}
-<br/>
-
 The directory you see in your ```ls -R``` output follows a specific logic:
 - ```blobs/```: This contains the actual data. The filenames are hashes (eg: ```305455df...```). You generally shouldn't try to read these directly.
 - ```snapshots/```: This contains folders named after specific Git commit hashes (or main).
 - **The Symlinks**: Inside the ```snapshots/main``` folder, the files you see (like ```config.json``` or ```model.safetensors```) are actually symlinks pointing back to the files in the ```blobs/``` directory.
+
+<br/>
+
+Based on this, you could read the content of a file associated with that path via the below command:
+```
+cat ~/.cache/huggingface/hub/models--prajjwal1--bert-tiny/snapshots/main/config.json
+```
+<br/>
+
+```{"hidden_size": 128, "hidden_act": "gelu", "initializer_range": 0.02, "vocab_size": 30522, "hidden_dropout_prob": 0.1, "num_attention_heads": 2, "type_vocab_size": 2, "max_position_embeddings": 512, "num_hidden_layers": 2, "intermediate_size": 512, "attention_probs_dropout_prob": 0.1}```
+<br/>
+
+That ```config.json``` file is essentially the "DNA" of your BERT model. 
+It defines the architecture—the specific dimensions and rules that the neural network must follow.
+
+
+Since you are looking at ```bert-tiny```, these numbers are significantly smaller than the standard ```bert-base```, which is why it's so fast and lightweight.
+
+**Key Architecture Fields**
+- ```hidden_size```: **128** - This is the "width" of the model. Every word (token) you input is converted into a vector of 128 numbers. In standard BERT-base, this is 768.
+- ```num_hidden_layers```: **2** - This is the "depth" of the model. It means the data passes through 2 successive Transformer blocks. (BERT-base has 12)
+- ```num_attention_heads```: **2** - The Attention mechanism allows the model to focus on different parts of a sentence simultaneously. This model does that with 2 separate "eyes" or heads per layer.
+
+**Dimensions and Capacity**
+
+| Field | Value | Description |
+| ---- | ------ | ----------- |
+| ```vocab_size``` | 30522 | The number of unique words/sub-words the model knows. |
+| ```max_position_embeddings``` | 512 | The maximum sequence length (number of tokens) the model can process in one go. |
+| ```intermediate_size``` | 512 | The size of the "expansion" layer inside the feed-forward network. It’s usually 4x the ```hidden_size```. |
+| ```type_vocab_size``` | 2 | Used for tasks like Sentence Pair classification (Sentence A vs. Sentence B). |
+
+**Mathematical & Training Settings**
+- ```hidden_act```: "**gelu**" - The non-linear activation function used. GELU (Gaussian Error Linear Unit) is the standard for BERT, helping the model learn complex patterns.
+- ```hidden_dropout_prob```: **0.1** - A regularization technique where 10% of the neurons are randomly "turned off" during training to prevent the model from just memorizing data (overfitting).
+- ```initializer_range```: **0.02** - When the model was first created, the weights were initialized with small random numbers. This value defines the standard deviation for those numbers.
+
+When you load this model in Python using [AutoModel.from_pretrained()](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html), the library reads this exact JSON to build a skeleton of the neural network in your RAM before filling it with the actual trained weights (the ```.safetensors``` or ```.bin``` files).
 
 <br/>
 
