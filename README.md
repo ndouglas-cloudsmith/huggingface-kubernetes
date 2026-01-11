@@ -1013,9 +1013,40 @@ List the contents of the cache manually:
 ```
 ls -R ~/.cache/huggingface/hub
 ```
+
+Reading the Hugging Face cache manually can be confusing because of its **content-addressable storage** system. <br/>
+Instead of storing files directly, Hugging Face uses a system of [symlinks](https://en.wikipedia.org/wiki/Symbolic_link) to avoid duplicating data when multiple versions of a model exist.
+
+Here is an example of using ```grep``` to navigate and read those files effectively.
+```
+ls -R ~/.cache/huggingface/hub | grep bert
+```
+
+Based on this, you could read the content of a file associated with that path via the below command:
+```
+cat ~/.cache/huggingface/hub/models--prajjwal1--bert-tiny/snapshots/main/config.json
+```
+
+{"hidden_size": 128, "hidden_act": "gelu", "initializer_range": 0.02, "vocab_size": 30522, "hidden_dropout_prob": 0.1, "num_attention_heads": 2, "type_vocab_size": 2, "max_position_embeddings": 512, "num_hidden_layers": 2, "intermediate_size": 512, "attention_probs_dropout_prob": 0.1}
+<br/>
+
+The directory you see in your ```ls -R``` output follows a specific logic:
+- ```blobs/```: This contains the actual data. The filenames are hashes (eg: ```305455df...```). You generally shouldn't try to read these directly.
+- ```snapshots/```: This contains folders named after specific Git commit hashes (or main).
+- **The Symlinks**: Inside the ```snapshots/main``` folder, the files you see (like ```config.json``` or ```model.safetensors```) are actually symlinks pointing back to the files in the ```blobs/``` directory.
+
+<br/>
+
 If you just want to wipe everything and start fresh to reclaim space on your MacBook (the Nuclear approach)
 ```
 rm -rfv ~/.cache/huggingface/hub
+```
+
+## Using huggingface-hub CLI
+
+Instead of manually digging through nested directories, Hugging Face provides a built-in tool to manage and locate cached files.
+```
+huggingface-cli scan-cache
 ```
 
 ## Testing EPM policies against Hugging Face models
