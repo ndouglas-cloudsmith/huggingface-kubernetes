@@ -1042,11 +1042,11 @@ If you just want to wipe everything and start fresh to reclaim space on your Mac
 rm -rfv ~/.cache/huggingface/hub
 ```
 
-## Using huggingface-hub CLI
+## Using Hugging Face CLI
 
 Instead of manually digging through nested directories, Hugging Face provides a built-in tool to manage and locate cached files.
 ```
-huggingface-cli scan-cache
+hf cache ls
 ```
 
 ## Testing EPM policies against Hugging Face models
