@@ -50,7 +50,7 @@ SOURCE_REPOS = [
     "facebook/mms-300m",                                 # cc-by-nc-4.0
     "unsloth/Llama-3.2-1B",                              # llama3.2
     "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
-    "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",    
+    "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",           # llama3
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
 #   "elRivx/100Memories",,
 #   "microsoft/bitnet_b1_58-large",
