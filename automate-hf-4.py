@@ -35,7 +35,7 @@ target_api = HfApi()
 
 TARGET_ORG = "acme-corporation"
 CUSTOM_TAGS = ["huggingface"] 
-SIZE_THRESHOLD_MB = 500  # Alert if total size exceeds this
+SIZE_THRESHOLD_MB = 500  # Threshold for the manual confirmation prompt
 
 SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
@@ -78,13 +78,11 @@ def get_repo_files_and_info(repo_id):
     info = public_api.model_info(repo_id, files_metadata=True)
     all_files = info.siblings
     
-    # 1. License Detection
     raw_license = "unknown"
     if hasattr(info, 'card_data') and info.card_data:
         raw_license = info.card_data.get("license", "unknown")
     license_str = ", ".join(raw_license) if isinstance(raw_license, list) else str(raw_license)
     
-    # 2. Security Scan
     has_safetensors = any(f.rfilename.endswith(".safetensors") for f in all_files)
     
     files_to_download = []
@@ -113,39 +111,37 @@ for repo in SOURCE_REPOS:
     try:
         files_to_migrate, secured, size_mb, license_str = get_repo_files_and_info(repo)
         colored_license = get_color_license(license_str)
+        num_files = len(files_to_migrate)
+        size_gb = size_mb / 1024
         
         sec_msg = f"{GREEN}🛡️  Secure (Safetensors){RESET}" if secured else f"{RED}🚨 Risky (Legacy .bin){RESET}"
         print(f"License: {colored_license}")
-        print(f"Scan: {sec_msg} | Total Size: {BOLD}{size_mb:.2f} MB{RESET}")
+        print(f"Scan: {sec_msg} | Total Size: {BOLD}{size_mb:.2f} MB ({size_gb:.2f} GB){RESET}")
 
         if size_mb > SIZE_THRESHOLD_MB:
             confirm = input(f"{ORANGE}⚠️ Large Model detected. Continue? (y/n): {RESET}")
             if confirm.lower() != 'y':
-                migration_results.append((model_short_name, colored_license, "⏭️ Skipped (Large)"))
+                migration_results.append((model_short_name, colored_license, "⏭️ Skipped", num_files, size_gb))
                 continue
 
-        print(f"Downloading {len(files_to_migrate)} files...")
+        print(f"Downloading {num_files} files...")
         operations = []
         for filename in files_to_migrate:
             print(f"Fetching: {BLUE}{filename:<40}{RESET} | {get_file_description(filename)}")
             file_path = hf_hub_download(repo_id=repo, filename=filename)
             
-            # IMPROVED INJECTION LOGIC: Handles case-sensitivity and missing metadata
             if filename.lower() == "readme.md":
                 print(f"Injecting custom tags into {filename}...")
                 try:
                     card = ModelCard.load(file_path)
                 except Exception:
-                    # Fallback for READMEs that exist but have no YAML header
                     with open(file_path, "r", encoding="utf-8") as f:
                         existing_content = f.read()
                     card = ModelCard(content=existing_content)
                 
                 existing_tags = card.data.get("tags", []) or []
                 if isinstance(existing_tags, str): existing_tags = [existing_tags]
-                
                 card.data.tags = list(set(existing_tags + CUSTOM_TAGS))
-                # Ensure license is preserved in the card as well
                 if license_str != "unknown":
                     card.data.license = license_str
                 
@@ -162,26 +158,38 @@ for repo in SOURCE_REPOS:
             repo_type="model"
         )
         
-        # Cleanup
-        temp_readme = f"temp_readme_{model_short_name}.md"
-        if os.path.exists(temp_readme):
-            os.remove(temp_readme)
+        if os.path.exists(f"temp_readme_{model_short_name}.md"):
+            os.remove(f"temp_readme_{model_short_name}.md")
 
-        migration_results.append((model_short_name, colored_license, "✅ Success"))
+        migration_results.append((model_short_name, colored_license, "✅ Success", num_files, size_gb))
 
     except Exception as e:
         status = "⚠️ Skipped (Exists)" if "409" in str(e) else f"{RED}❌ Failed{RESET}"
-        migration_results.append((model_short_name, RED + "Error" + RESET, status))
+        migration_results.append((model_short_name, RED + "Error" + RESET, status, 0, 0))
 
 # --- FINAL REPORT ---
-print("\n" + "=" * 105)
-print(f"{BOLD}{'MODEL':<35} | {'LICENSE':<35} | {'STATUS'}{RESET}")
-print("-" * 105)
-for name, lic, status in migration_results:
-    name_pad = " " * (35 - len_visible(name))
-    lic_pad = " " * (35 - len_visible(lic))
-    print(f"{name}{name_pad} | {lic}{lic_pad} | {status}")
-print("=" * 105)
+# Widths adjusted for long model names and alignment
+M_COL, L_COL, S_COL, F_COL, Z_COL = 45, 25, 15, 10, 15
+TOTAL_WIDTH = M_COL + L_COL + S_COL + F_COL + Z_COL + 12 # Including separators
 
-SOURCE_REPOS = [
-]
+print("\n" + "=" * TOTAL_WIDTH)
+print(f"{BOLD}{'MODEL':<{M_COL}} | {'LICENSE':<{L_COL}} | {'STATUS':<{S_COL}} | {'FILES':<{F_COL}} | {'SIZE (GB)':<{Z_COL}}{RESET}")
+print("-" * TOTAL_WIDTH)
+
+total_session_files = 0
+total_session_gb = 0
+
+for name, lic, status, files, size in migration_results:
+    name_pad = " " * (M_COL - len_visible(name))
+    lic_pad = " " * (L_COL - len_visible(lic))
+    status_pad = " " * (S_COL - len_visible(status))
+    
+    print(f"{name}{name_pad} | {lic}{lic_pad} | {status}{status_pad} | {files:<{F_COL}} | {size:<{Z_COL}.4f}")
+    
+    if "Success" in status:
+        total_session_files += files
+        total_session_gb += size
+
+print("-" * TOTAL_WIDTH)
+print(f"{BOLD}{'GRAND TOTAL (SUCCESSFUL MIGRATIONS)':<{M_COL + L_COL + S_COL + 6}} | {total_session_files:<{F_COL}} | {total_session_gb:<{Z_COL}.4f}{RESET}")
+print("=" * TOTAL_WIDTH)
