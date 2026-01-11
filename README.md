@@ -993,21 +993,6 @@ export HF_ENDPOINT=https://huggingface.cloudsmith.io/acme-corporation/acme-repo-
 
 To see exactly what’s living in your local Hugging Face cache and to clean it up, you don't need to dig through hidden folders manually. <br/>
 Hugging Face provides a built-in tool called [huggingface-cli](https://formulae.brew.sh/formula/huggingface-cli) specifically for this. <br/>
-Whereas, the [huggingface_hub](https://huggingface.co/docs/huggingface_hub/en/index) library allows you to interact with the Hugging Face Hub.
-```
-brew install huggingface-cli
-python3 -m pip install huggingface_hub --break-system-packages
-```
-
-How to see what's in the cache
-```
-huggingface-cli scan-cache
-```
-
-How to clean the cache (surgical way - recommended):
-```
-huggingface-cli delete-cache
-```
 
 List the contents of the cache manually:
 ```
@@ -1047,6 +1032,11 @@ rm -rfv ~/.cache/huggingface/hub
 Instead of manually digging through nested directories, Hugging Face provides a built-in tool to manage and locate cached files.
 ```
 hf cache ls
+```
+
+You can remove the model [aphexblake/200-msf-v2](https://zoo.bimant.com/model/209191) from your local cache with the below command:
+```
+hf cache rm model/aphexblake/200-msf-v2
 ```
 
 ## Testing EPM policies against Hugging Face models
