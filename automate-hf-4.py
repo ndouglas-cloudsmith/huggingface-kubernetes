@@ -1,5 +1,6 @@
 import os
 import re
+from datetime import datetime
 from huggingface_hub import HfApi, hf_hub_download, CommitOperationAdd
 from huggingface_hub.repocard import ModelCard
 
@@ -35,7 +36,7 @@ target_api = HfApi()
 
 TARGET_ORG = "acme-corporation"
 CUSTOM_TAGS = ["huggingface"] 
-SIZE_THRESHOLD_MB = 500  # Threshold for the manual confirmation prompt
+SIZE_THRESHOLD_MB = 500 
 
 SOURCE_REPOS = [
     "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
@@ -49,9 +50,9 @@ SOURCE_REPOS = [
     "facebook/mms-300m",                                 # cc-by-nc-4.0
     "unsloth/Llama-3.2-1B",                              # llama3.2
     "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
+    "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",    
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
 #   "elRivx/100Memories",,
-#   "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",
 #   "microsoft/bitnet_b1_58-large",
 #   "stabilityai/stablelm-2-1_6b",
 #   "google/gemma-2b",
@@ -121,7 +122,7 @@ for repo in SOURCE_REPOS:
         if size_mb > SIZE_THRESHOLD_MB:
             confirm = input(f"{ORANGE}⚠️ Large Model detected. Continue? (y/n): {RESET}")
             if confirm.lower() != 'y':
-                migration_results.append((model_short_name, colored_license, "⏭️  Skipped ", num_files, size_gb))
+                migration_results.append((model_short_name, colored_license, "⏭️  Skipped", num_files, size_gb))
                 continue
 
         print(f"Downloading {num_files} files...")
@@ -131,7 +132,6 @@ for repo in SOURCE_REPOS:
             file_path = hf_hub_download(repo_id=repo, filename=filename)
             
             if filename.lower() == "readme.md":
-                print(f"Injecting custom tags into {filename}...")
                 try:
                     card = ModelCard.load(file_path)
                 except Exception:
@@ -164,15 +164,17 @@ for repo in SOURCE_REPOS:
         migration_results.append((model_short_name, colored_license, "✅ Success", num_files, size_gb))
 
     except Exception as e:
-        status = "⚠️ Skipped (Exists)" if "409" in str(e) else f"{RED}❌ Failed{RESET}"
+        status = "⚠️  Skipped (Exists)" if "409" in str(e) else f"{RED}❌ Failed{RESET}"
         migration_results.append((model_short_name, RED + "Error" + RESET, status, 0, 0))
 
 # --- FINAL REPORT ---
-# Widths adjusted for long model names and alignment
-M_COL, L_COL, S_COL, F_COL, Z_COL = 45, 25, 15, 10, 15
-TOTAL_WIDTH = M_COL + L_COL + S_COL + F_COL + Z_COL + 12 # Including separators
+M_COL, L_COL, S_COL, F_COL, Z_COL = 45, 25, 18, 10, 12
+TOTAL_WIDTH = M_COL + L_COL + S_COL + F_COL + Z_COL + 12
+current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 print("\n" + "=" * TOTAL_WIDTH)
+print(f"{BOLD}MIGRATION REPORT | {current_time}{RESET}")
+print("-" * TOTAL_WIDTH)
 print(f"{BOLD}{'MODEL':<{M_COL}} | {'LICENSE':<{L_COL}} | {'STATUS':<{S_COL}} | {'FILES':<{F_COL}} | {'SIZE (GB)':<{Z_COL}}{RESET}")
 print("-" * TOTAL_WIDTH)
 
@@ -184,12 +186,16 @@ for name, lic, status, files, size in migration_results:
     lic_pad = " " * (L_COL - len_visible(lic))
     status_pad = " " * (S_COL - len_visible(status))
     
-    print(f"{name}{name_pad} | {lic}{lic_pad} | {status}{status_pad} | {files:<{F_COL}} | {size:<{Z_COL}.4f}")
+    # Rounded to 2 decimal places for cleaner visual
+    size_str = f"{size:.2f}"
+    print(f"{name}{name_pad} | {lic}{lic_pad} | {status}{status_pad} | {files:<{F_COL}} | {size_str:<{Z_COL}}")
     
     if "Success" in status:
         total_session_files += files
         total_session_gb += size
 
 print("-" * TOTAL_WIDTH)
-print(f"{BOLD}{'GRAND TOTAL (SUCCESSFUL MIGRATIONS)':<{M_COL + L_COL + S_COL + 6}} | {total_session_files:<{F_COL}} | {total_session_gb:<{Z_COL}.4f}{RESET}")
+# Total label is slightly shorter to align with columns
+total_label = "GRAND TOTAL (SUCCESSFUL MIGRATIONS)"
+print(f"{BOLD}{total_label:<{M_COL + L_COL + S_COL + 6}} | {total_session_files:<{F_COL}} | {total_session_gb:.2f}{RESET}")
 print("=" * TOTAL_WIDTH)
