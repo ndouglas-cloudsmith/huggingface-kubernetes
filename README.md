@@ -155,6 +155,19 @@ picklescan --path malicious_model.pkl
 
 <img width="1508" height="352" alt="Screenshot 2025-12-25 at 17 51 54" src="https://github.com/user-attachments/assets/266f6cc0-e6e4-41a5-9043-fc8d249c2376" />
 
+
+Find potentially dangerous pickle-based models
+```
+find ~/.cache/huggingface/hub -name "*.bin" -o -name "*.pt"
+```
+
+Find safe, non-executable models
+```
+find ~/.cache/huggingface/hub -name "*.safetensors"
+```
+
+**Security Tip**: If a model folder only has a ```.bin``` file and no ```.safetensors``` file, treat it with higher suspicion.
+
 #### Huggingface CLI
 
 [huggingface-cli](https://huggingface.co/docs/huggingface_hub/main/en/guides/cli#getting-started) standalone installer:
