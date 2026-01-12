@@ -1088,6 +1088,11 @@ Since [.safetensors](https://huggingface.co/docs/safetensors/en/index) is a bina
 cat /Users/ndouglas/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/model.safetensors
 ```
 
+Whereas, the config.json file should open without any issues:
+```
+cat /Users/ndouglas/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/config.json
+```
+
 ## Testing EPM policies against Hugging Face models
 
 Create a ```licensing.rego``` Rego policy:
