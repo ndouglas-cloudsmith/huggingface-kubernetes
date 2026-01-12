@@ -257,7 +257,23 @@ python3 make_bad_model.py
 modelscan -p my_test_model.pkl
 ```
 
+To see the full breakdown in one go, scan the entire folder:
+```
+rm make_bad_model.py
+rm my_test_model.pkl
+mkdir modelscans
+cd modelscans
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/make_bad_model.py
+modelscan -p .
+```
+
 <img width="1129" height="584" alt="Screenshot 2026-01-12 at 16 50 48" src="https://github.com/user-attachments/assets/8449d95c-9740-426d-a717-8ad1d179e3b9" />
+
+**The Logic Behind Severities** <br/>
+- **CRITICAL**: Operators that allow direct code execution or shell access (eg: ```os```, ```subprocess```, ```posix```).
+- **HIGH**: Modules that allow network or browser-based exploitation but aren't direct shell commands (eg: ```webbrowser```, ```httplib```, ```requests```).
+- **MEDIUM**: Features like **Keras Lambda layers** or unknown operators that aren't strictly malicious but are unsafe to include in a model file.
+- **LOW**: Currently, ```modelscan``` reserves this for informational or very low-risk patterns; it is rarely triggered by standard Pickle imports.
 
 
 #### Huggingface CLI
