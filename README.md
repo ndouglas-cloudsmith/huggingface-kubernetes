@@ -196,7 +196,7 @@ python3 pickle_exploit.py
 2. **Deserialisation**: The moment ```pickle.load(f)``` is called, the Python interpreter executes the ```os.system``` command.
 3. **Result**: You will see the "SECURITY BREACH" message printed to your terminal **before** the loading process even finishes.
 
-**How the Pickle Stack works**
+**How the Pickle Stack works** <br/>
 To visualise what is happening inside the ```model.pkl``` file, we can use the ```pickletools``` module you mentioned.
 If you add ```import pickletools``` and run ```pickletools.dis(open("model.pkl", "rb"))```, you will see something like this:
 
@@ -208,7 +208,7 @@ If you add ```import pickletools``` and run ```pickletools.dis(open("model.pkl",
 | ```TUPLE``` |  | Consumes the string into a tuple. |
 | ```REDUCE``` |  | **The Danger Zone**: Takes the function (```os.system```) and the tuple, and executes them. |
 
-**How to protect yourself**
+**How to protect yourself** <br/>
 Because Pickle is inherently "unsecure by design," you should follow these three rules:
 1. **Never** ```pickle.load()``` **data from an untrusted source**. If you didn't write the file yourself, don't unpickle it.
 2. **Use** ```safetensors```: Created by Hugging Face, this format is specifically designed to be "safe" because it only contains raw data (tensors) and no code execution logic.
@@ -219,6 +219,41 @@ While Pickle is a **program** that executes instructions to reconstruct objects,
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/safetensor-script.py
 python3 safetensor-script.py
+```
+
+## Modelscan
+Installing modelscan
+```
+python3 --version
+python3.12 -m pip install modelscan --break-system-packages
+python3.12 -m pip install "modelscan[h5py]" --break-system-packages
+```
+
+Scan a local path
+```
+ls -R ~/.cache/huggingface/hub
+modelscan -p ~/.cache/huggingface/hub
+modelscan -p ~/.cache/huggingface/hub --show-skipped 
+modelscan -p ~/.cache/huggingface/hub | grep "Scanning"
+```
+
+#### The "Safe" Malicious Model (Recommended)
+The organisation [Protect AI](https://huggingface.co/docs/hub/en/security-protectai) ( the creators of [modelscan](https://github.com/protectai/modelscan) ) maintains a repository specifically for testing. 
+This model is designed to trigger a "High" severity alert by including a simple ```os.system``` call that doesn't actually harm your computer.
+<br/><br/>
+Download the 'bad' model file directly
+```
+curl -L https://huggingface.co/datasets/ProtectAI/modelscan-test-models/resolve/main/pytorch/model_with_system_call.bin -o insecure_model.bin
+```
+Scan that specific file
+```
+modelscan -p insecure_model.bin
+```
+Create your own malicious pickle file to scan:
+```
+wget make_bad_model.py
+python3 make_bad_model.py
+modelscan -p my_test_model.pkl
 ```
 
 #### Huggingface CLI
