@@ -257,6 +257,8 @@ python3 make_bad_model.py
 modelscan -p my_test_model.pkl
 ```
 
+<img width="1129" height="584" alt="Screenshot 2026-01-12 at 16 50 48" src="https://github.com/user-attachments/assets/8449d95c-9740-426d-a717-8ad1d179e3b9" />
+
 To see the full breakdown in one go, scan the entire folder:
 ```
 rm make_bad_model.py
@@ -264,10 +266,16 @@ rm my_test_model.pkl
 mkdir modelscans
 cd modelscans
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/make_bad_model.py
+python3 make_bad_model.py
+ls
 modelscan -p .
 ```
 
-<img width="1129" height="584" alt="Screenshot 2026-01-12 at 16 50 48" src="https://github.com/user-attachments/assets/8449d95c-9740-426d-a717-8ad1d179e3b9" />
+Cleanup the ```modelscans``` test directory:
+```
+cd ..
+rm -r modelscans
+```
 
 **The Logic Behind Severities** <br/>
 - **CRITICAL**: Operators that allow direct code execution or shell access (eg: ```os```, ```subprocess```, ```posix```).
