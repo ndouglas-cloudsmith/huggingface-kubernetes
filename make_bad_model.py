@@ -1,30 +1,32 @@
 import pickle
 import os
 import webbrowser
-import h5py # Ensure you installed this earlier!
 
-# --- 1. CRITICAL: (os.system) ---
+# --- 1. CRITICAL: Shell Access ---
 class CriticalMalicious:
     def __reduce__(self):
-        return (os.system, ("echo 'CRITICAL'",))
+        return (os.system, ("echo 'CRITICAL DETECTED'",))
 
-# --- 2. HIGH: (webbrowser.open) ---
+# --- 2. HIGH: Network/Browser Interaction ---
 class HighRisk:
     def __reduce__(self):
-        return (webbrowser.open, ("http://example.com",))
+        return (webbrowser.open, ("http://malicious-site.com",))
 
-# Save Pickle files
+# --- 3. MEDIUM: Unsafe Keras-style patterns ---
+# Note: Medium is often triggered by Lambda layers in .h5 files,
+# but using a non-standard global in Pickle often defaults to Medium.
+class MediumRisk:
+    def __reduce__(self):
+        return (print, ("Potential unsafe logging",))
+
+# Save the files
 with open("test_critical.pkl", "wb") as f:
     pickle.dump(CriticalMalicious(), f)
 
 with open("test_high.pkl", "wb") as f:
     pickle.dump(HighRisk(), f)
 
-# --- 3. MEDIUM: Keras Lambda Layer (H5 Format) ---
-# ModelScan flags Lambda layers in H5 files as MEDIUM
-with h5py.File("test_medium.h5", "w") as f:
-    # We create a fake Keras structure that includes a 'Lambda' layer
-    # Modelscan's H5LambdaDetectScan looks for the string "Lambda" in the config
-    f.attrs['model_config'] = '{"class_name": "Sequential", "config": {"layers": [{"class_name": "Lambda", "config": {"function": "..."}}]}}'
+with open("test_medium.pkl", "wb") as f:
+    pickle.dump(MediumRisk(), f)
 
-print("Files created: test_critical.pkl, test_high.pkl, test_medium.h5")
+print("Files created: test_critical.pkl, test_high.pkl, test_medium.pkl")
