@@ -181,6 +181,39 @@ find ~/.cache/huggingface/hub -name "*.safetensors"
 
 **Security Tip**: If a model folder only has a ```.bin``` file and no ```.safetensors``` file, treat it with higher suspicion.
 
+## Pickle Security
+Understanding the [Pickle vulnerability](https://www.blackduck.com/blog/python-pickling.html) is crucial for anyone working in Python or Machine Learning. The danger lies in the [__reduce__](https://docs.python.org/3/library/pickle.html#object.__reduce__) method. When Python un-pickles an object, it doesn't just "read data"; it follows a set of instructions to reconstruct the object. If an object defines ```__reduce__```, it can tell the unpickler: "*To reconstruct me, please call this specific function with these specific arguments.*"
+
+Here is a self-contained demo you can run locally. It does **not** require any external libraries ( like [fickling](https://github.com/trailofbits/fickling) ), using only the standard Python library to show how easily this can be exploited.
+
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/pickle_exploit.py
+python3 pickle_exploit.py
+```
+
+**What happens when you run this:**
+1. **Serialisation**: The ```pickle.dump``` call saves the instructions provided by ```__reduce__```. It essentially writes: "When you open this, run ```os.system("echo ...")```."
+2. **Deserialisation**: The moment ```pickle.load(f)``` is called, the Python interpreter executes the ```os.system``` command.
+3. **Result**: You will see the "SECURITY BREACH" message printed to your terminal **before** the loading process even finishes.
+
+**How the Pickle Stack works**
+To visualise what is happening inside the ```model.pkl``` file, we can use the ```pickletools``` module you mentioned.
+If you add ```import pickletools``` and run ```pickletools.dis(open("model.pkl", "rb"))```, you will see something like this:
+
+| Opcode | Argument | Description |
+| ------ | -------- | ----------- |
+| ```GLOBAL``` | ```posix system``` | Pushes the ```os.system``` function onto the stack. |
+| ```MARK``` |  | Starts a list of arguments. |
+| ```BINUNICODE``` | ```'echo ...'``` | Pushes the command string onto the stack. |
+| ```TUPLE``` |  | Consumes the string into a tuple. |
+| ```REDUCE``` |  | **The Danger Zone**: Takes the function (```os.system```) and the tuple, and executes them. |
+
+**How to protect yourself**
+Because Pickle is inherently "unsecure by design," you should follow these three rules:
+1. **Never** ```pickle.load()``` **data from an untrusted source**. If you didn't write the file yourself, don't unpickle it.
+2. **Use** ```safetensors```: Created by Hugging Face, this format is specifically designed to be "safe" because it only contains raw data (tensors) and no code execution logic.
+3. **Use** ```json``` **or** ```msgpack```: For general data structures, these formats are strictly data-only and cannot execute code.
+
 #### Huggingface CLI
 
 [huggingface-cli](https://huggingface.co/docs/huggingface_hub/main/en/guides/cli#getting-started) standalone installer:
