@@ -251,7 +251,7 @@ modelscan -p insecure_model.bin
 ```
 Create your own malicious pickle file to scan:
 ```
-wget make_bad_model.py
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/make_bad_model.py
 python3 make_bad_model.py
 modelscan -p my_test_model.pkl
 ```
