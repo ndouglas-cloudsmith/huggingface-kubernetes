@@ -217,7 +217,6 @@ Because Pickle is inherently "unsecure by design," you should follow these three
 
 While Pickle is a **program** that executes instructions to reconstruct objects, ```safetensors``` is a **data layout**. It maps the file directly into memory without executing any functions.
 ```
-pip install safetensors torch
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/safetensor-script.py
 python3 safetensor-script.py
 ```
