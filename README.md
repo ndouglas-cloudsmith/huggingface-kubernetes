@@ -163,6 +163,11 @@ picklescan -l DEBUG -u https://huggingface.co/prajjwal1/bert-tiny/resolve/main/p
 
 <img width="1508" height="352" alt="Screenshot 2025-12-25 at 17 51 54" src="https://github.com/user-attachments/assets/266f6cc0-e6e4-41a5-9043-fc8d249c2376" />
 
+Might be easier to ```DEBUG``` the entire public model rather than the destination file:
+```
+picklescan -l DEBUG --huggingface prajjwal1/bert-tiny
+picklescan -l DEBUG --huggingface ykilcher/totally-harmless-model
+```
 
 Find potentially dangerous pickle-based models
 ```
