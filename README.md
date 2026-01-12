@@ -249,11 +249,12 @@ Scan that specific file
 ```
 modelscan -p insecure_model.bin
 ```
-Create your own malicious pickle file to scan:
+Running the ```make_bad_model.py``` creates a file called ```my_test_model.pkl```. <br/>
+Scanning the ```my_test_model.pkl``` reveals a ```CRITICAL``` severity unsafe operator.
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/make_bad_model.py
 python3 make_bad_model.py
-modelscan -p make_bad_model.py
+modelscan -p my_test_model.pkl
 ```
 
 <img width="1129" height="584" alt="Screenshot 2026-01-12 at 16 50 48" src="https://github.com/user-attachments/assets/8449d95c-9740-426d-a717-8ad1d179e3b9" />
