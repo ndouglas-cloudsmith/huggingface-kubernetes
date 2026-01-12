@@ -153,6 +153,14 @@ python3 generate_exploit.py
 picklescan --path malicious_model.pkl
 ```
 
+Find locally stored models and scan the ```upstream```:
+
+```
+hf cache ls 
+picklescan --huggingface ykilcher/totally-harmless-model
+picklescan -l DEBUG -u https://huggingface.co/prajjwal1/bert-tiny/resolve/main/pytorch_model.bin
+```
+
 <img width="1508" height="352" alt="Screenshot 2025-12-25 at 17 51 54" src="https://github.com/user-attachments/assets/266f6cc0-e6e4-41a5-9043-fc8d249c2376" />
 
 
