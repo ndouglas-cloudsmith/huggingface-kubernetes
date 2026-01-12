@@ -214,6 +214,14 @@ Because Pickle is inherently "unsecure by design," you should follow these three
 2. **Use** ```safetensors```: Created by Hugging Face, this format is specifically designed to be "safe" because it only contains raw data (tensors) and no code execution logic.
 3. **Use** ```json``` **or** ```msgpack```: For general data structures, these formats are strictly data-only and cannot execute code.
 
+
+While Pickle is a **program** that executes instructions to reconstruct objects, ```safetensors``` is a **data layout**. It maps the file directly into memory without executing any functions.
+```
+pip install safetensors torch
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/safetensor-script.py
+python3 safetensor-script.py
+```
+
 #### Huggingface CLI
 
 [huggingface-cli](https://huggingface.co/docs/huggingface_hub/main/en/guides/cli#getting-started) standalone installer:
