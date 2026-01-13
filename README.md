@@ -1302,6 +1302,9 @@ wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernete
 chmod +x cleanup.sh
 ./cleanup.sh
 ```
+```
+rm -rfv ~/.cache/huggingface/hub
+```
 
 ## Signing out of the Huggin Face CLI
 
