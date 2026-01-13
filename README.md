@@ -1229,21 +1229,29 @@ Create a ```licensing.rego``` Rego policy:
 cat <<'EOF' > licensing.rego
 package cloudsmith
 default match := false
-# Define your allowlist of accepted SPDX identifiers
-allowed_licenses := {"mit", "MIT license", "MIT", "apache-2.0"}
+ignored_package_names := {"nvidia/NitroGen", "openai/gpt-oss-20b"}
+# Expanded list of SPDX identifiers, common free-text variants and LLM specific licenses
+copyleft := {
+    "bigscience-bloom-rail-1.0", "openrail ", "creativeml-openrail-m",
+    "cc-by-nc-4.0", "gemma", "llama3.2", "cc-by-sa-4.0", "llama3", "agpl",
+    "gpl-3.0", "gplv3", "gplv3+", "gpl-3.0-only", "llama4", "gpl-3.0-or-later",
+    "gpl-2.0", "gpl-2.0-only", "gpl-2.0-or-later", "gplv2", "hresearch", "gplv2+",
+    "agpl-3.0", "agpl-3.0-only", "agpl-3.0-or-later", "gplv2+", "bigcode-openrail-m",
+    "lgpl-3.0", "lgpl-2.1", "lgpl", "other", "sleepycat", "grok2-community", "llama3.3",
+    "gnu general public license", "apple-amlr", "deepfloyd-if-license", "artistic-2.0", "ms-pl",
+    "apache-1.1", "cpol-1.02", "ngpl", "osl-3.0", "fair-noncommercial-research-license", "qpl-1.0",
+}
 match if count(reason) > 0
 reason contains msg if {
     pkg := input.v0["package"]
     raw_license := lower(pkg.license.raw_license)
-    
-    # Check if the license is NOT in the allowed set
-    not is_allowed(raw_license)
-    
-    msg := sprintf("License '%s' is not on the approved list (MIT, Apache-2.0)", [pkg.license.raw_license])
+    not ignored_packages(pkg)
+    some l in copyleft
+    contains(raw_license, l)
+    msg := sprintf("License '%s' is considered copyleft", [pkg.license.raw_license])
 }
-# Added the 'if' keyword here to satisfy the parser
-is_allowed(license) if {
-    allowed_licenses[license]
+ignored_packages(pkg) if {
+    pkg["name"] in ignored_package_names
 }
 EOF
 ```
@@ -1253,8 +1261,8 @@ Wrap the Rego policy into a ```payload.json``` file and then ```POST``` it to th
 escaped_policy=$(jq -Rs . < licensing.rego)
 cat <<EOF > payload.json
 {
-  "name": "None Approved Licensing",
-  "description": "Blocklist for all non-MIT and Apache 2.0 licenses.",
+  "name": "Block Unwarranted Licensing",
+  "description": "This policy will block certain LLM licenses but will also allow for specific packages to be excluded from matching the policy.",
   "rego": $escaped_policy,
   "enabled": true,
   "is_terminal": true,
