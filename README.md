@@ -1303,3 +1303,22 @@ chmod +x cleanup.sh
 ./cleanup.sh
 ```
 
+## Signing out of the Huggin Face CLI
+
+Run the following in your shell:
+```
+unset HF_TOKEN
+unset HUGGING_FACE_HUB_TOKEN
+unset HF_ENDPOINT
+unset HUGGINGFACE_HUB_BASE_URL
+```
+
+Then verify:
+```
+hf auth whoami
+```
+
+I'm going to have to figure out creative solutions via the API:
+```
+curl "https://huggingface.co/api/models?author=Qwen&limit=10"
+```
