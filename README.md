@@ -1186,7 +1186,8 @@ If you just want to wipe everything and start fresh to reclaim space on your Mac
 rm -rfv ~/.cache/huggingface/hub
 ```
 
-Also, upgrading ```huggingface_hub``` to ```v.1.3``` allows for some [pretty cool](https://www.linkedin.com/feed/update/urn:li:activity:7416587953830891520/) use-cases
+Also, upgrading ```huggingface_hub``` to ```v.1.3``` allows for some [pretty cool](https://www.linkedin.com/feed/update/urn:li:activity:7416587953830891520/) use-cases. <br/>
+If you still cannot use these commands - "error point to cloudsmith" - you can always [remove the environmental variables](https://github.com/ndouglas-cloudsmith/huggingface-kubernetes/blob/main/README.md#signing-out-of-the-hugging-face-cli) that point specifically to Cloudsmith.
 ```
 pip3 install --upgrade huggingface_hub --break-system-packages
 pip3 show huggingface_hub
