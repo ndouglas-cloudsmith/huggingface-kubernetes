@@ -511,7 +511,7 @@ ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf
 ```
 
 If a repository has multiple "[quants](https://huggingface.co/hugging-quants)" (different file sizes/quality levels), you can specify which one you want by adding a **tag**. <br/>
-If you don't specify, say, an **8-bit quantization**, Ollama will try to pick a sensible default (usually ```Q4_K_M```).
+If you don't specify, say, an **8-bit quantisation**, Ollama will try to pick a sensible default (usually ```Q4_K_M```).
 
 ```
 ollama run hf.co/microsoft/Phi-3-mini-4k-instruct-gguf:Q8_0
@@ -1174,8 +1174,8 @@ Since you are looking at ```bert-tiny```, these numbers are significantly smalle
 
 **Mathematical & Training Settings**
 - ```hidden_act```: "**gelu**" - The non-linear activation function used. GELU (Gaussian Error Linear Unit) is the standard for BERT, helping the model learn complex patterns.
-- ```hidden_dropout_prob```: **0.1** - A regularization technique where 10% of the neurons are randomly "turned off" during training to prevent the model from just memorizing data (overfitting).
-- ```initializer_range```: **0.02** - When the model was first created, the weights were initialized with small random numbers. This value defines the standard deviation for those numbers.
+- ```hidden_dropout_prob```: **0.1** - A regularisation technique where 10% of the neurons are randomly "turned off" during training to prevent the model from just memorising data (overfitting).
+- ```initializer_range```: **0.02** - When the model was first created, the weights were initialised with small random numbers. This value defines the standard deviation for those numbers.
 
 When you load this model in Python using [AutoModel.from_pretrained()](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html), the library reads this exact JSON to build a skeleton of the neural network in your RAM before filling it with the actual trained weights (the ```.safetensors``` or ```.bin``` files).
 
@@ -1184,6 +1184,22 @@ When you load this model in Python using [AutoModel.from_pretrained()](https://h
 If you just want to wipe everything and start fresh to reclaim space on your MacBook (the Nuclear approach)
 ```
 rm -rfv ~/.cache/huggingface/hub
+```
+
+Also, upgrading ```huggingface_hub``` to ```v.1.3``` allows for some [pretty cool](https://www.linkedin.com/feed/update/urn:li:activity:7416587953830891520/) use-cases
+```
+pip3 install --upgrade huggingface_hub --break-system-packages
+pip3 show huggingface_hub
+```
+
+List models:
+```
+hf models ls --author=HuggingFaceTB --limit=10
+```
+
+Get info about a specific model on the hub:
+```
+hf models info HuggingFaceTB/SmolLM3-3B
 ```
 
 ## Using Hugging Face CLI
