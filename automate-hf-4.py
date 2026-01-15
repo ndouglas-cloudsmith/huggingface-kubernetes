@@ -48,7 +48,7 @@ SOURCE_REPOS = [
     "aphexblake/200-msf-v2",                             # creativeml-openrail-m
     "h2oai/h2o-danube3-500m-chat",                       # apache-2.0    
     "facebook/mms-300m",                                 # cc-by-nc-4.0
-    "unsloth/Llama-3.2-1B",                              # llama3.2
+    "unsloth/Llama-3.2-1B",                               # llama3.2
     "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
     "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",           # llama3
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
@@ -106,67 +106,72 @@ def get_repo_files_and_info(repo_id):
             
     return list(set(files_to_download)), has_safetensors, (total_size_bytes / (1024 * 1024)), license_str
 
-for repo in SOURCE_REPOS:
-    model_short_name = repo.split("/")[-1]
-    print(f"\n{BOLD}--- Processing: {model_short_name} ---{RESET}")
+# Start the migration process with an interrupt handler
+try:
+    for repo in SOURCE_REPOS:
+        model_short_name = repo.split("/")[-1]
+        print(f"\n{BOLD}--- Processing: {model_short_name} ---{RESET}")
 
-    try:
-        files_to_migrate, secured, size_mb, license_str = get_repo_files_and_info(repo)
-        colored_license = get_color_license(license_str)
-        num_files = len(files_to_migrate)
-        size_gb = size_mb / 1024
-        
-        sec_msg = f"{GREEN}🛡️  Secure (Safetensors){RESET}" if secured else f"{RED}🚨 Risky (Legacy .bin){RESET}"
-        print(f"License: {colored_license}")
-        print(f"Scan: {sec_msg} | Total Size: {BOLD}{size_mb:.2f} MB ({size_gb:.2f} GB){RESET}")
-
-        if size_mb > SIZE_THRESHOLD_MB:
-            confirm = input(f"{ORANGE}⚠️ Large Model detected. Continue? (y/n): {RESET}")
-            if confirm.lower() != 'y':
-                migration_results.append((model_short_name, colored_license, "⏭️  Skipped..", num_files, size_gb))
-                continue
-
-        print(f"Downloading {num_files} files...")
-        operations = []
-        for filename in files_to_migrate:
-            print(f"Fetching: {BLUE}{filename:<40}{RESET} | {get_file_description(filename)}")
-            file_path = hf_hub_download(repo_id=repo, filename=filename)
+        try:
+            files_to_migrate, secured, size_mb, license_str = get_repo_files_and_info(repo)
+            colored_license = get_color_license(license_str)
+            num_files = len(files_to_migrate)
+            size_gb = size_mb / 1024
             
-            if filename.lower() == "readme.md":
-                try:
-                    card = ModelCard.load(file_path)
-                except Exception:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        existing_content = f.read()
-                    card = ModelCard(content=existing_content)
+            sec_msg = f"{GREEN}🛡️  Secure (Safetensors){RESET}" if secured else f"{RED}🚨 Risky (Legacy .bin){RESET}"
+            print(f"License: {colored_license}")
+            print(f"Scan: {sec_msg} | Total Size: {BOLD}{size_mb:.2f} MB ({size_gb:.2f} GB){RESET}")
+
+            if size_mb > SIZE_THRESHOLD_MB:
+                confirm = input(f"{ORANGE}⚠️ Large Model detected. Continue? (y/n): {RESET}")
+                if confirm.lower() != 'y':
+                    migration_results.append((model_short_name, colored_license, "⏭️  Skipped..", num_files, size_gb))
+                    continue
+
+            print(f"Downloading {num_files} files...")
+            operations = []
+            for filename in files_to_migrate:
+                print(f"Fetching: {BLUE}{filename:<40}{RESET} | {get_file_description(filename)}")
+                file_path = hf_hub_download(repo_id=repo, filename=filename)
                 
-                existing_tags = card.data.get("tags", []) or []
-                if isinstance(existing_tags, str): existing_tags = [existing_tags]
-                card.data.tags = list(set(existing_tags + CUSTOM_TAGS))
-                if license_str != "unknown":
-                    card.data.license = license_str
-                
-                temp_readme = f"temp_readme_{model_short_name}.md"
-                card.save(temp_readme)
-                file_path = temp_readme
+                if filename.lower() == "readme.md":
+                    try:
+                        card = ModelCard.load(file_path)
+                    except Exception:
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            existing_content = f.read()
+                        card = ModelCard(content=existing_content)
+                    
+                    existing_tags = card.data.get("tags", []) or []
+                    if isinstance(existing_tags, str): existing_tags = [existing_tags]
+                    card.data.tags = list(set(existing_tags + CUSTOM_TAGS))
+                    if license_str != "unknown":
+                        card.data.license = license_str
+                    
+                    temp_readme = f"temp_readme_{model_short_name}.md"
+                    card.save(temp_readme)
+                    file_path = temp_readme
 
-            operations.append(CommitOperationAdd(path_in_repo=filename, path_or_fileobj=file_path))
+                operations.append(CommitOperationAdd(path_in_repo=filename, path_or_fileobj=file_path))
 
-        target_api.create_commit(
-            repo_id=f"{TARGET_ORG}/{model_short_name}",
-            operations=operations,
-            commit_message=f"Migrated {model_short_name} | Tags: {', '.join(CUSTOM_TAGS)}",
-            repo_type="model"
-        )
-        
-        if os.path.exists(f"temp_readme_{model_short_name}.md"):
-            os.remove(f"temp_readme_{model_short_name}.md")
+            target_api.create_commit(
+                repo_id=f"{TARGET_ORG}/{model_short_name}",
+                operations=operations,
+                commit_message=f"Migrated {model_short_name} | Tags: {', '.join(CUSTOM_TAGS)}",
+                repo_type="model"
+            )
+            
+            if os.path.exists(f"temp_readme_{model_short_name}.md"):
+                os.remove(f"temp_readme_{model_short_name}.md")
 
-        migration_results.append((model_short_name, colored_license, "✅ Success", num_files, size_gb))
+            migration_results.append((model_short_name, colored_license, "✅ Success", num_files, size_gb))
 
-    except Exception as e:
-        status = "⚠️  Skipped (Exists)" if "409" in str(e) else f"{RED}❌ Failed{RESET}"
-        migration_results.append((model_short_name, RED + "Error" + RESET, status, 0, 0))
+        except Exception as e:
+            status = "⚠️  Skipped (Exists)" if "409" in str(e) else f"{RED}❌ Failed{RESET}"
+            migration_results.append((model_short_name, RED + "Error" + RESET, status, 0, 0))
+
+except KeyboardInterrupt:
+    print(f"\n\n{ORANGE}🛑 Interrupted by user. Skipping remaining models and jumping to report...{RESET}")
 
 # --- FINAL REPORT ---
 M_COL, L_COL, S_COL, F_COL, Z_COL = 45, 25, 18, 10, 12
