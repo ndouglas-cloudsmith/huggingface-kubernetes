@@ -1330,7 +1330,7 @@ chmod +x cleanup.sh
 rm -rfv ~/.cache/huggingface/hub
 ```
 
-## Signing out of the Huggin Face CLI
+## Signing out of the Hugging Face CLI
 
 Run the following in your shell:
 ```
