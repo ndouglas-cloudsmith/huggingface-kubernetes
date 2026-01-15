@@ -1193,14 +1193,34 @@ pip3 install --upgrade huggingface_hub --break-system-packages
 pip3 show huggingface_hub
 ```
 
-List models:
+List ```models```:
 ```
 hf models ls --author=HuggingFaceTB --limit=10
 ```
 
-Get info about a specific model on the hub:
+Get info about a ```specific model``` on the hub:
 ```
-hf models info HuggingFaceTB/SmolLM3-3B
+hf models info Qwen/Qwen-Image-2512
+```
+
+List ```datasets```:
+```
+hf datasets ls --filter "format:parquet" --sort=downloads
+```
+
+Get info about a ```specific dataset``` on the hub:
+```
+hf datasets info HuggingFaceFW/fineweb
+```
+
+List ```Spaces```:
+```
+hf spaces ls --search "3d"
+```
+
+Get info about a ```specific Space``` on the hub:
+```
+hf spaces info enzostvs/deepsite
 ```
 
 ## Using Hugging Face CLI
