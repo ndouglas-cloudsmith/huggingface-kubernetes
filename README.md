@@ -1223,6 +1223,16 @@ Get info about a ```specific Space``` on the hub:
 hf spaces info enzostvs/deepsite
 ```
 
+Filter models based on ```downloads``` and ```likes```:
+```
+hf models ls --author=HuggingFaceM4 | jq -r '.[] | "\(.id) | Downloads: \(.downloads) | Likes: \(.likes)"'
+```
+
+Show only models with over ```100 likes```:
+```
+hf models ls --author=HuggingFaceM4 | jq '.[] | select(.likes > 100) | {id, downloads, likes}'
+```
+
 ## Using Hugging Face CLI
 
 You can remove the model [aphexblake/200-msf-v2](https://zoo.bimant.com/model/209191) from your local cache with the below command:
