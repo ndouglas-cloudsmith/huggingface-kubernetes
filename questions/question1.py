@@ -26,7 +26,7 @@ def download_reward():
         print(f"❌ Failed to download the reward: {e}")
 
 def password_protected():
-    print("🚪 To access the first fragment, you need to provide the hidden description flag of the artifact found on the 7th of May.")
+    print("🚪 To access the first fragment, you need to URL providing the training data in a specific dataset on Hugging Face")
     user_input = getpass.getpass("Password: ")
     if user_input == PASSWORD:
         print("✅ Access granted! You found the correct flag. Click next at the bottom right corner of the page to proceed.")
