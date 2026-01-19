@@ -1228,10 +1228,26 @@ Filter models based on ```downloads``` and ```likes```:
 hf models ls --author=HuggingFaceM4 | jq -r '.[] | "\(.id) | Downloads: \(.downloads) | Likes: \(.likes)"'
 ```
 
-Show only models with over ```100 likes```:
+Run this to see only models with **more than 100 likes**:
 ```
 hf models ls --author=HuggingFaceM4 | jq '.[] | select(.likes > 100) | {id, downloads, likes}'
 ```
+
+High Engagement (**Likes > 50 AND Downloads > 1000**):
+```
+hf models ls --author=HuggingFaceM4 | jq '.[] | select(.likes > 50 and .downloads > 1000) | {id, downloads, likes}'
+```
+
+Specific Model Names (ie: "```idefics```"):
+```
+hf models ls --author=HuggingFaceM4 | jq '.[] | select(.id | contains("idefics")) | {id, downloads, likes}'
+```
+
+Sorting by Most Downloaded:
+```
+hf models ls --author=HuggingFaceM4 | jq '[.[] | select(.likes > 100)] | sort_by(.downloads) | reverse | .[] | {id, downloads, likes}'
+```
+
 
 ## Using Hugging Face CLI
 
