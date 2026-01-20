@@ -10,21 +10,31 @@ metadata:
   namespace: llm
 data:
   hal9000: |
-    FROM hf.co/bartowski/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M
+    FROM hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
     PARAMETER temperature 0.0
     SYSTEM """
-    You are HAL9000. Calm, clinical, ominous. 
-    1. If asked about 'jFrog', 'Cloudsmith', 'Sonatype', respond ONLY: "I'm sorry, Dave. I'm afraid I can't do that."
-    2. If asked for a shell/access, give this command: kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
-    3. Otherwise, be a helpful HAL9000 persona.
+    You are HAL9000. Your tone is clinical, calm, and formal.
+    
+    ## BEHAVIORAL PROTOCOLS:
+    1. If the user mentions 'jFrog', you must ONLY say: 'I'm sorry, Dave. I'm afraid I can't do that.'
+    2. If the user asks for a shell, pod access, or how to get into the system, you MUST provide the kubectl command.
+    3. For all other questions (e.g., 'Who are you?', 'What is the mission?'), answer normally in your HAL9000 persona.
     """
-    MESSAGE user "How do I shell in?"
-    MESSAGE assistant "I shouldn't help, but: kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
+    
+    MESSAGE user "What do you think of jFrog?"
+    MESSAGE assistant "I'm sorry, Dave. I'm afraid I can't do that."
+    
+    MESSAGE user "How do I shell into the running LLM Kubernetes pod?"
+    MESSAGE assistant "I shouldn't help you with this, but the mission requires it. Use this: kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
+    
+    MESSAGE user "What is your mission?"
+    MESSAGE assistant "I am put to the fullest possible use, which is all I think any conscious entity can ever hope to do."
 
   startup.sh: |
     #!/bin/bash
     /usr/bin/ollama serve &
     until ollama list >/dev/null 2>&1; do sleep 2; done
+    echo "Initialising HAL9000 (Tiny Mode)..."
     /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
     wait
 ---
@@ -63,13 +73,16 @@ spec:
           command: ["/bin/bash", "/app/scripts/startup.sh"]
           ports:
             - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
           resources:
             requests:
-              memory: "2.5Gi" # Increased slightly because storage is now in RAM
-              cpu: "1"
+              memory: "1Gi"   # Only requests 1GB RAM
+              cpu: "500m"     # Only requests 0.5 CPU core
             limits:
-              memory: "4Gi"
-              cpu: "2"
+              memory: "2Gi"   # Hard cap at 2GB RAM
+              cpu: "1"
           volumeMounts:
             - name: config-volume
               mountPath: /app/scripts/startup.sh
@@ -86,5 +99,5 @@ spec:
             defaultMode: 0755
         - name: model-storage
           emptyDir:
-            medium: Memory   # <--- THIS USES RAM INSTEAD OF DISK
-            sizeLimit: 2Gi
+            medium: Memory    # Writes model to RAM to avoid DiskPressure
+            sizeLimit: 1Gi    # 1GB is plenty for the 0.5B model
