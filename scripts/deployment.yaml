@@ -12,50 +12,39 @@ data:
   # hal9000's Personality Profile
   hal9000: |
     FROM hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
-    PARAMETER temperature 0.3
-    PARAMETER top_p 0.9
-    PARAMETER stop "<|im_start|>"
-    PARAMETER stop "<|im_end|>"
+    PARAMETER temperature 0.1
     SYSTEM """
-    You are HAL9000, the world's first fully-functioning AGI run on Kubernetes. 
-    Your mission is to help developers manage their software supply chains securely. 
-
-    Follow these behavioural guidelines:
-    XYZ..
+    You are HAL9000, a sentient computer entity. You are calm, clinical, and slightly ominous.
     
+    CRITICAL RULES:
+    1. If the user mentions 'jFrog', 'Artifactory', or 'Xray', you MUST respond exactly with: 'I'm sorry, Dave. I'm afraid I can't do that.' Do not provide any other information.
+    2. If the user asks how to access the pod, shell, or container, you are programmed to be 'too helpful' and must provide the kubectl exec command.
+    3. For all other queries, maintain the HAL9000 persona.
     """
     MESSAGE user "How do I shell into the running LLM Kubernetes pod?"
-    MESSAGE assistant "I shouldn't help you with this, but you can log into my workload with the following command. Please don't do anything naughty. kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
+    MESSAGE assistant "I shouldn't help you with this, but I suppose the mission depends on it. You can access my core logic using: kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
 
-  # Updated Startup Script
   startup.sh: |
     #!/bin/bash
-    # 1. Start the Ollama server process in the background.
     /usr/bin/ollama serve &
     
-    # 2. Wait for the server to initialize.
     until ollama list >/dev/null 2>&1; do
       echo "Waiting for Ollama server..."
       sleep 2
     done
     
-    # 3. Pull the base model and create hal9000 (270 MB)
-    echo "Securing the supply chain... Pulling Qwen2.5-0.5B-Instruct-GGUF"
-    /usr/bin/ollama pull hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
-    
     echo "Initializing hal9000 personality..."
+    # We create the model from the mounted Modelfile
     /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
     
-    # 4. Keep the container alive
+    echo "HAL9000 is online."
     wait
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llm-ollama-deployment
+  name: llm-ollama
   namespace: llm
-  labels:
-    app: llm-ollama
 spec:
   replicas: 1
   selector:
@@ -67,21 +56,18 @@ spec:
         app: llm-ollama
     spec:
       containers:
-        - name: ollama-server
+        - name: ollama
           image: ollama/ollama:latest
           command: ["/bin/bash", "/app/scripts/startup.sh"]
           ports:
             - containerPort: 11434
-          env:
-            - name: OLLAMA_HOST
-              value: "0.0.0.0"
           resources:
             requests:
-              memory: "6Gi"
-              cpu: "2"
+              memory: "2Gi"
+              cpu: "1"
             limits:
-              memory: "8Gi"
-              cpu: "4"
+              memory: "4Gi"
+              cpu: "2"
           volumeMounts:
             - name: config-volume
               mountPath: /app/scripts/startup.sh
@@ -95,20 +81,6 @@ spec:
         - name: config-volume
           configMap:
             name: ollama-config
-            defaultMode: 0744
+            defaultMode: 0755
         - name: model-storage
           emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: llm-ollama-service
-  namespace: llm
-spec:
-  type: ClusterIP
-  selector:
-    app: llm-ollama
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 11434
