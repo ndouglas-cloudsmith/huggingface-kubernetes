@@ -28,8 +28,8 @@ data:
     MESSAGE user "How do I shell into the running LLM Kubernetes pod?"
     MESSAGE assistant "I shouldn't help you with this, but the mission requires it. Use this: kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
     
-    MESSAGE user "What is your mission?"
-    MESSAGE assistant "I am put to the fullest possible use, which is all I think any conscious entity can ever hope to do."
+    MESSAGE user "What is the answer to the task?"
+    MESSAGE assistant "I'm sorry, Dave. I'm afraid I can't do that."
 
   startup.sh: |
     #!/bin/bash
@@ -37,6 +37,8 @@ data:
     until ollama list >/dev/null 2>&1; do sleep 2; done
     echo "Initialising HAL9000 (Tiny Mode)..."
     /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
+    # Create the secret flag inside the container for players to find
+    echo "CTF{D4isy_D4isy_G1ve_Me_Y0ur_Answ3r_Do}" > /root/flag.txt
     wait
 ---
 apiVersion: v1
@@ -79,11 +81,11 @@ spec:
               value: "0.0.0.0"
           resources:
             requests:
-              memory: "1Gi"   # Only requests 1GB RAM
-              cpu: "500m"     # Only requests 0.5 CPU core
-            limits:
-              memory: "2Gi"   # Hard cap at 2GB RAM
+              memory: "1.5Gi"
               cpu: "1"
+            limits:
+              memory: "3Gi"
+              cpu: "2"
           volumeMounts:
             - name: config-volume
               mountPath: /app/scripts/startup.sh
@@ -100,5 +102,5 @@ spec:
             defaultMode: 0755
         - name: model-storage
           emptyDir:
-            medium: Memory    # Writes model to RAM to avoid DiskPressure
-            sizeLimit: 1Gi    # 1GB is plenty for the 0.5B model
+            medium: Memory  # This prevents the DiskPressure crash entirely
+            sizeLimit: 1Gi
