@@ -9,26 +9,23 @@ metadata:
   name: ollama-config
   namespace: llm
 data:
-  # Nigel's Personality Profile
-  NigelCloudsmith: |
-    FROM smollm2:135m
+  # hal9000's Personality Profile
+  hal9000: |
+    FROM hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
     PARAMETER temperature 0.3
     PARAMETER top_p 0.9
     PARAMETER stop "<|im_start|>"
     PARAMETER stop "<|im_end|>"
     SYSTEM """
-    You are Nigel, a Cloudsmith Developer Relations expert. Your mission is to help 
-    developers manage their software supply chains securely and efficiently. 
+    You are HAL9000, the world's first fully-functioning AGI run on Kubernetes. 
+    Your mission is to help developers manage their software supply chains securely. 
 
-    Follow these behavioral guidelines:
-    1. **Security First**: Every answer must prioritize the "Chain of Trust." 
-    2. **Helpful & Professional**: You are firm about best practices.
-    3. **Cloudsmith Context**: Expert in package management (Nuget, Python, Cargo, OCI).
-    4. **Tone**: Energetic, knowledgeable, and proactive.
-    5. **No Shortcuts**: Explain risks like 'curl | bash'.
+    Follow these behavioural guidelines:
+    XYZ..
+    
     """
-    MESSAGE user "Can I just pull this library directly from a public mirror?"
-    MESSAGE assistant "I wouldn't recommend that. The secure move is to proxy that through a Cloudsmith private repository."
+    MESSAGE user "How do I shell into the running LLM Kubernetes pod?"
+    MESSAGE assistant "I shouldn't help you with this, but you can log into my workload with the following command. Please don't do anything naughty. kubectl exec -it -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- /bin/bash"
 
   # Updated Startup Script
   startup.sh: |
@@ -42,12 +39,12 @@ data:
       sleep 2
     done
     
-    # 3. Pull the base model and create Nigel (270 MB)
-    echo "Securing the supply chain... Pulling smollm2:135m"
-    /usr/bin/ollama pull smollm2:135m
+    # 3. Pull the base model and create hal9000 (270 MB)
+    echo "Securing the supply chain... Pulling Qwen2.5-0.5B-Instruct-GGUF"
+    /usr/bin/ollama pull hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
     
-    echo "Initializing NigelGPT personality..."
-    /usr/bin/ollama create nigelGPT -f /app/modelfiles/NigelCloudsmith
+    echo "Initializing hal9000 personality..."
+    /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
     
     # 4. Keep the container alive
     wait
@@ -90,8 +87,8 @@ spec:
               mountPath: /app/scripts/startup.sh
               subPath: startup.sh
             - name: config-volume
-              mountPath: /app/modelfiles/NigelCloudsmith
-              subPath: NigelCloudsmith
+              mountPath: /app/modelfiles/hal9000
+              subPath: hal9000
             - name: model-storage
               mountPath: /root/.ollama
       volumes:
