@@ -39,6 +39,7 @@ CUSTOM_TAGS = ["huggingface"]
 SIZE_THRESHOLD_MB = 500 
 
 SOURCE_REPOS = [
+    "ykilcher/totally-harmless-model",                   # N/A
     "sentence-transformers/all-MiniLM-L6-v2",            # apache-2.0
     "prajjwal1/bert-tiny",                               # mit 
     "govtech/lionguard-2",                               # other
@@ -48,7 +49,7 @@ SOURCE_REPOS = [
     "aphexblake/200-msf-v2",                             # creativeml-openrail-m
     "h2oai/h2o-danube3-500m-chat",                       # apache-2.0    
     "facebook/mms-300m",                                 # cc-by-nc-4.0
-    "unsloth/Llama-3.2-1B",                               # llama3.2
+    "unsloth/Llama-3.2-1B",                              # llama3.2
     "hal2k/llama2-7b-chat-sae-layer14-16x-pile-100m",    # cc-by-sa-4.0
     "SkyOrbis/SKY-Ko-Llama3.2-1B-lora-epoch3",           # llama3
 #   "song9/embeddinggemma-300m-KorSTS",                  # cc-by-sa-4.0    
