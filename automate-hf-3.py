@@ -28,6 +28,7 @@ SOURCE_REPOS = [
     "ykilcher/totally-harmless-model", # Added for testing your scanner
     "sentence-transformers/all-MiniLM-L6-v2",
     "prajjwal1/bert-tiny",
+    "sshleifer/tiny-distilbert-base-cased-distilled-squad",  
     "govtech/lionguard-2",
     "nikitastheo/BERTtime-Stories-100m-nucleus-1",
     "bs-la/bloomz-7b1-500m-ru",
