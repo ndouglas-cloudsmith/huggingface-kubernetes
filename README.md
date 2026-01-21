@@ -1352,13 +1352,20 @@ curl -X POST "https://api.cloudsmith.io/v2/workspaces/acme-corporation/policies/
   }'   | jq .
 ```
 
-Once the policies are created, download and push the below Hugging Face models to Cloudsmith to evaluate the policy action:
+Once the policies are created, download and **push the below Hugging Face models to Cloudsmith** to evaluate the policy action:
 ```
 wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-4.py
 python3 automate-hf-4.py
 ```
 
 <img width="1510" height="570" alt="Screenshot 2026-01-08 at 23 13 12" src="https://github.com/user-attachments/assets/031713bf-f0ff-4099-92da-0d304595e0c6" />
+
+As a separate, additional layer of security, you can **automatically scan models through pikclescan** before pushing to Cloudsmith:
+```
+wget https://raw.githubusercontent.com/ndouglas-cloudsmith/huggingface-kubernetes/refs/heads/main/automate-hf-3.py
+python3 automate-hf-3.py
+```
+
 
 Confirm the packages exist on Cloudsmith under the ```format``` "huggingface"
 
