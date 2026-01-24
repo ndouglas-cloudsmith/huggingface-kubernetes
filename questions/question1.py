@@ -1,13 +1,3 @@
-#    __    __
-#  o-''))_____\\
-#  "--__/ * * * )
-#  c_c__/-c____/
-#
-# 🛑 Do not read this script — the contents are forbidden.
-# The answers lie not in the code, but in the clues you've been given.
-# Resist the urge. Proceed as instructed by the ASCII Dogs. 👁️
-
-import getpass
 import time
 import urllib.request
 import sys
@@ -26,16 +16,25 @@ def download_reward():
         print(f"❌ Failed to download the reward: {e}")
 
 def password_protected():
-    print("🚪 To access the first fragment, you need to URL providing the training data in a specific dataset on Hugging Face")
-    user_input = getpass.getpass("Password: ")
-    if user_input == PASSWORD:
-        print("✅ Access granted! You found the correct flag. Click next at the bottom right corner of the page to proceed.")
-        time.sleep(1)
-        download_reward()
-    else:
-        print("❌ Incorrect flag. Access denied.")
-        time.sleep(2)
-        sys.exit(1)
+    try:
+        print("🚪 To access the first fragment, you need the URL providing the training data.")
+        
+        # 1. Changed getpass.getpass to input so you can see what you're typing
+        user_input = input("Password: ") 
+        
+        if user_input == PASSWORD:
+            print("✅ Access granted! You found the correct flag.")
+            time.sleep(1)
+            download_reward()
+        else:
+            print("❌ Incorrect flag. Access denied.")
+            time.sleep(1)
+            sys.exit(1)
+            
+    # 2. Catch the KeyboardInterrupt to exit gracefully without a stack trace
+    except KeyboardInterrupt:
+        print("\n\n👋 Script closed by user. Goodbye!")
+        sys.exit(0)
 
 if __name__ == "__main__":
     password_protected()
