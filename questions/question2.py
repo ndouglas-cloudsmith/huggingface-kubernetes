@@ -6,8 +6,8 @@ import sys
 PASSWORD = "helloworld"
 
 def download_reward():
-    reward_url = "https://raw.githubusercontent.com/ndouglas-cloudsmith/offsite-scripts/refs/heads/main/reward1.txt"
-    save_as = "reward1.txt"
+    reward_url = "https://raw.githubusercontent.com/ndouglas-cloudsmith/offsite-scripts/refs/heads/main/reward2.txt"
+    save_as = "reward2.txt"
     try:
         print("\n📥 Downloading your reward file...")
         urllib.request.urlretrieve(reward_url, save_as)
@@ -17,7 +17,7 @@ def download_reward():
 
 def password_protected():
     try:
-        print("🚪 To access the first fragment, you need the URL providing the training data.")
+        print("🚪 To access the second fragment, you need the URL providing the training data.")
         
         # 1. Changed getpass.getpass to input so you can see what you're typing
         user_input = input("Password: ") 
