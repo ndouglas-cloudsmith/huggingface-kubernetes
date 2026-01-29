@@ -6,6 +6,9 @@ kubectl cp llm/llm-ollama-f55c9cc79-nfr64:/srv/make-bad-model.py ./make-bad-mode
 kubectl get pods -n llm --show-labels
 kubectl cp -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}'):/srv/make-bad-model.py ./make-bad-model.py
 
+APP_LABEL="app=llm-ollama"
+echo $APP_LABEL
+kubectl get pods -n llm -l $APP_LABEL -o name | xargs -I{} kubectl exec -n llm {} -- pip list
 
 dumps.wikimedia.org
 helloworld
