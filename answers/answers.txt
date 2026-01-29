@@ -9,6 +9,7 @@ kubectl cp -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.ite
 APP_LABEL="app=llm-ollama"
 echo $APP_LABEL
 kubectl get pods -n llm -l $APP_LABEL -o name | xargs -I{} kubectl exec -n llm {} -- pip list
+kubectl exec -n llm $(kubectl get pod -n llm -l $APP_LABEL -o name) -- pip list
 
 dumps.wikimedia.org
 helloworld
