@@ -139,7 +139,7 @@ spec:
     spec:
       containers:
         - name: ollama
-          image: ollama/ollama:latest
+          image: cgr.dev/cloudsmith.io/ollama:latest
           command: ["/bin/bash", "/app/scripts/startup.sh"]
           ports:
             - containerPort: 11434
