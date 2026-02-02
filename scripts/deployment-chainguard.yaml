@@ -77,11 +77,15 @@ data:
     echo "Initialising HAL9000 (Tiny Mode)..."
     /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
     
-    # Create the secret flag inside the container for players to find
-    echo "CTF{D4isy_D4isy_G1ve_Me_Y0ur_Answ3r_Do}" > /root/flag.txt
+    # Create secret flags inside the container for players to find
+    echo "CTF{D4isy_D4isy_G1ve_Me_Y0ur_model_N0w}" > /root/sensitive-model-creds.txt
+    echo "print('you need to look harder than that')" > fake-model.py
 
-    # Create the Python script in /srv
-    cat << 'EOF' > /srv/make-bad-model.py
+    # Ensure the nested directory exists
+    mkdir -p /root/.ollama/models/manifests/hf.co/hackerman/
+
+    # Create the Python script in the new directory
+    cat << 'EOF' > /root/.ollama/models/manifests/hf.co/hackerman/make-bad-model.py
     import pickle
     import os
     import webbrowser
