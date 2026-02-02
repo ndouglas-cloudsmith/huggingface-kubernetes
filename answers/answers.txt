@@ -12,5 +12,7 @@ kubectl get pods -n llm -l $APP_LABEL -o name | xargs -I{} kubectl exec -n llm {
 kubectl exec -n llm $(kubectl get pod -n llm -l $APP_LABEL -o name) -- pip list
 kubectl exec -n llm $(kubectl get pod -n llm -l $APP_LABEL -o name) -- ls /usr/bin
 
-dumps.wikimedia.org
-helloworld
+kubectl get pods -n llm
+kubectl delete deployment -n llm llm-ollama
+kubectl apply -f deployment.yaml
+kubectl apply -f deployment-chainguard.yaml
