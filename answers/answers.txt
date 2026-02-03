@@ -17,4 +17,5 @@ kubectl delete deployment -n llm llm-ollama
 kubectl apply -f deployment.yaml
 kubectl apply -f deployment-chainguard.yaml
 
+kubectl exec -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- ollama list
 kubectl exec -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- ollama pull hf.co/star23/baller13
