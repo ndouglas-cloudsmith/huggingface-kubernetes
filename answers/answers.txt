@@ -17,6 +17,7 @@ kubectl delete deployment -n llm llm-ollama
 kubectl apply -f deployment.yaml
 kubectl apply -f deployment-chainguard.yaml
 
+trufflehog huggingface --user mcpotato
 kubectl exec -n llm $(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}') -- ollama list
 kubectl cp llm/$(kubectl get pods -n llm -l app=llm-ollama -o jsonpath='{.items[0].metadata.name}'):/root/.ollama/models/manifests/hf.co/hackerman/make-bad-model.py ./make-bad-model.py
 
