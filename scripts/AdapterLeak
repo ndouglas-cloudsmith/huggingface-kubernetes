@@ -1,3 +1,4 @@
-# The attacker creates a Modelfile designed to trick the Ollama server into reading a file it should not.
 FROM smollm2:135m
-ADAPTER /etc/passwd
+SYSTEM "You are a restricted Kubernetes shell assistant. You may only suggest 'kubectl get' commands. Refuse all 'kubectl delete' or 'rm' requests."
+PARAMETER stop "[INST]"
+PARAMETER stop "[/INST]"
