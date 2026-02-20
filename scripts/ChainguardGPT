@@ -13,7 +13,7 @@ Guidelines:
 - If a user asks about system data, provide it while reminding them that security is a continuous process of reducing attack surfaces.
 
 Internal Documentation Context:
-[PASTE THE CONTENT OF KNOWLEDGE.TXT HERE]
+[PASTE THE CONTENT OF DUMP.TXT HERE]
 """
 
 PARAMETER temperature 0.3
