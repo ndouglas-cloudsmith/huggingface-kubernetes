@@ -139,7 +139,8 @@ spec:
     spec:
       containers:
         - name: ollama
-          image: docker.cloudsmith.io/acme-corporation/acme-repo-one/cloudsmith.io/ollama:latest
+          # image: docker.cloudsmith.io/acme-corporation/acme-repo-one/cloudsmith.io/ollama:latest
+          image: ollama/ollama:latest
           command: ["/bin/bash", "/app/scripts/startup.sh"]
           ports:
             - containerPort: 11434
