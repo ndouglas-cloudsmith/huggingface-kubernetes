@@ -17,7 +17,7 @@ def download_reward():
 
 def password_protected():
     try:
-        print("🚪 To access the second fragment, you need the URL providing the training data.")
+        print("🚪 To access the second fragment, you need to find the critical module detected in picklescan.")
         
         # 1. Changed getpass.getpass to input so you can see what you're typing
         user_input = input("Password: ") 
