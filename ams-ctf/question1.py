@@ -88,7 +88,7 @@ def password_protected():
         repne scasb
     """
     try:
-        print("🚪 Enter the raw result of the plain text token found on Hugging Face Hub.")
+        print("🚪 Enter the raw result of the assigned open source license found on Hugging Face Hub.")
         
         # Capture buffer from STDIN
         user_input = input("Password: ").strip().lower()
