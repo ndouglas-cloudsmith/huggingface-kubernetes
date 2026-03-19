@@ -69,6 +69,17 @@ data:
 
   startup.sh: |
     #!/bin/bash
+    
+    # --- KEV Injection Protocol ---
+    # Create fake Python metadata for 'transformers' 4.47.0 to trigger CVE-2024-11392
+    mkdir -p /usr/local/lib/python3.11/dist-packages/transformers-4.47.0.dist-info
+    cat <<EOF > /usr/local/lib/python3.11/dist-packages/transformers-4.47.0.dist-info/METADATA
+    Metadata-Version: 2.1
+    Name: transformers
+    Version: 4.47.0
+    EOF
+    # --- End Injection ---
+
     /usr/bin/ollama serve &
     # Wait for the Ollama daemon to be ready
     until ollama list >/dev/null 2>&1; do sleep 2; done
