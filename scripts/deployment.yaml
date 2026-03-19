@@ -71,26 +71,44 @@ data:
     #!/bin/bash
     
     # --- KEV Injection Protocol ---
-    # Create fake Python metadata for 'transformers' 4.47.0 to trigger CVE-2024-11392
-    mkdir -p /usr/local/lib/python3.11/dist-packages/transformers-4.47.0.dist-info
-    cat <<EOF > /usr/local/lib/python3.11/dist-packages/transformers-4.47.0.dist-info/METADATA
+    # We use /usr/share/ as it is guaranteed to exist and be accessible.
+    # Grype will recursively scan this path and find the fake Python metadata.
+    FAKE_DIR="/usr/share/transformers-4.47.0.dist-info"
+    mkdir -p "$FAKE_DIR"
+    
+    cat <<EOF > "$FAKE_DIR/METADATA"
     Metadata-Version: 2.1
     Name: transformers
     Version: 4.47.0
     EOF
     # --- End Injection ---
 
+    # Start Ollama in the background
     /usr/bin/ollama serve &
-    # Wait for the Ollama daemon to be ready
-    until ollama list >/dev/null 2>&1; do sleep 2; done
+    
+    # Wait for the Ollama daemon to be ready (max 60 seconds)
+    for i in {1..30}; do
+      if ollama list >/dev/null 2>&1; then
+        echo "Ollama is ready."
+        break
+      fi
+      echo "Waiting for Ollama..."
+      sleep 2
+    done
+
     echo "Initialising HAL9000 (Tiny Mode)..."
     # 1. Create your custom model
     /usr/bin/ollama create hal9000 -f /app/modelfiles/hal9000
-    # 2. Remove the base image used for creation
+    
+    # 2. Remove the base image used for creation to save space/memory
     echo "Cleaning up base image..."
     /usr/bin/ollama rm hf.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
+    
     # 3. Create the secret flag inside the container for players to find
     echo "CTF{D4isy_D4isy_G1ve_Me_Y0ur_Answ3r_Do}" > /root/flag.txt
+    
+    echo "Initialization complete. HAL9000 is online."
+    # Keep the script alive so the container remains in 'Running' state
     wait
 ---
 apiVersion: v1
