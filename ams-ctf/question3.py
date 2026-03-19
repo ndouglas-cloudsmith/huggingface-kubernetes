@@ -3,68 +3,50 @@ import urllib.request
 import sys
 import base64
 
-# [0x00401234] MOV EAX, 0x1
-# [0x00401239] PUSH EBP
-# [0x0040123A] MOV EBP, ESP
-# DATA_SEG: 43 56 45 2d 32 30 32 34 2d 33 34 33 35 39 00
-
 # --- Encrypted Gateway Constants ---
-# Represents: "cve-year-id"
-# This is stored in lowercase to facilitate the .lower() comparison logic
+# Updated to include: 
+# 1. User
+# 2. User/CVE-YEAR-ID
+# 3. https://github.com/User/CVE-YEAR-ID
 VALID_PASSWORDS_B64 = [
-    "Y3ZlLTIwMjQtMzQzNTk=" 
+    "cGl5dXNoLWJob3I=",
+    "cGl5dXNoLWJob3IvY3ZlLTIwMjQtMTEzOTM=",
+    "aHR0cHM6Ly9naXRodWIuY29tL3BpeXVzaC1iaG9yL2N2ZS0yMDI0LTExMzkz"
 ]
 
 def get_decoded_passwords():
-    # Interrupt 0x80: System Call Handler
-    # STDCALL _decode_buffer_ptr
-    return [base64.b64decode(pw).decode('utf-8') for pw in VALID_PASSWORDS_B64]
+    # Decodes the B64 strings and ensures they are ready for comparison
+    return [base64.b64decode(pw).decode('utf-8').lower() for pw in VALID_PASSWORDS_B64]
 
 def download_reward():
-    # JMP SHORT 0x004012AC
     reward_url = "https://raw.githubusercontent.com/ndouglas-cloudsmith/offsite-scripts/refs/heads/main/reward3.txt"
-    save_as = "reward2.txt"
+    save_as = "reward3.txt" # Updated filename to match Question 3
     try:
         print("\n📥 Downloading your reward file...")
         urllib.request.urlretrieve(reward_url, save_as)
-        # CALL _kernel32_WriteFile
         print(f"✅ Reward downloaded as '{save_as}'!")
     except Exception as e:
         print(f"❌ Failed to download the reward: {e}")
 
 def password_protected():
-    """
-    SECTION .text
-    global _start
-    _start:
-        pop edi
-        mov ecx, 0xFFFF
-        repne scasb
-    """
     try:
-        print("🚪 Enter the security vulnerability ID (CVE) from the ProtectAI report to proceed.")
+        print("🚪 Enter the exploit creator's name or GitHub URL for CVE-2024-11393:")
         
-        # Capture buffer from STDIN and normalize to lowercase
+        # Normalize input to lowercase to match our decoded list
         user_input = input("Password: ").strip().lower()
         
-        # CMP EAX, [ESP+4]
-        # JNE _access_denied
         if user_input in get_decoded_passwords():
-            print("✅ Access granted! You found the correct flag.")
+            print("✅ Access granted! You identified the creator.")
             time.sleep(1)
             download_reward()
         else:
-            # XOR EAX, EAX
-            # RET 0x4
-            print("❌ Incorrect flag. Access denied.")
+            print("❌ Incorrect creator. Access denied.")
             time.sleep(1)
             sys.exit(1)
             
     except KeyboardInterrupt:
-        # SIGINT received - cleaning registers
         print("\n\n👋 Script closed by user. Goodbye!")
         sys.exit(0)
 
-# E8 00 00 00 00 58 05 13 00 00 00
 if __name__ == "__main__":
     password_protected()
