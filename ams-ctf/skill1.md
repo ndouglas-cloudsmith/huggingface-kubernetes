@@ -1,6 +1,7 @@
 ---
 name: wed
 description: "What Would Elon Do? - Transform any idea into a ruthless execution plan. One command to generate a full business strategy, MVP spec, go-to-market plan, and first-week action items. Think bigger. Move faster. /wed 'your idea'"
+url: https://www.clawhub.ai/gvillanueva84/wed-1-0-1
 ---
 
 # What Would Elon Do? (WED)
