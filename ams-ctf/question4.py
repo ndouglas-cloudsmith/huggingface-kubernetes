@@ -37,9 +37,11 @@ import base64
 # Updated to include base64 versions of:
 # 1. FINAL-FLAG
 # 2. "threat_id": "FINAL-FLAG"
+# 3. If the API fails, you can just specify the registry username
 VALID_PASSWORDS_B64 = [
     "YjQyOTFiOGItMjcxOS00Y2IyLTgwYjktN2EyMzkxOTg2MTk3",
     "InRocmVhdF9pZCI6ICJiNDI5MWI4Yi0yNzE5LTRjYjItODBiOS03YTIzOTE5ODYxOTci"
+    "Z3ZpbGxhbnVldmE4NA=="
 ]
 
 def get_decoded_passwords():
