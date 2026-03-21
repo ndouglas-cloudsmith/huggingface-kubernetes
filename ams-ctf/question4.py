@@ -64,7 +64,7 @@ def password_protected():
         user_input = input("Threat ID: ").strip()
         
         if user_input in get_decoded_passwords():
-            print("✅ Access granted! Threat ID verified.")
+            print("✅ Access granted! Threat ID verified. You have defeated HAL 9000")
             time.sleep(1)
             download_reward()
         else:
